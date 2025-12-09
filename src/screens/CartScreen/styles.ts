@@ -1,0 +1,160 @@
+import { StyleSheet } from 'react-native';
+import { COLORS } from '@/src/constants/colors';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    backgroundColor: COLORS.cardBackground,
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+  },
+  list: {
+    padding: 16,
+    paddingBottom: 100,
+  },
+  cartItem: {
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  itemImage: {
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
+    marginRight: 12,
+  },
+  itemInfo: {
+    flex: 1,
+    justifyContent: 'space-between',
+    minHeight: 80,
+  },
+  itemTitle: {
+    fontSize: 14,
+    color: COLORS.textPrimary,
+    marginBottom: 8,
+    lineHeight: 18,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  counterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  counterButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9F9F9',
+  },
+  counterButtonText: {
+    fontSize: 18,
+    color: '#00A046',
+    fontWeight: '600',
+  },
+  quantity: {
+    width: 40,
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#000',
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.price,
+  },
+  deleteButton: {
+    padding: 8,
+  },
+  deleteText: {
+    fontSize: 20,
+    color: '#999',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.cardBackground,
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: COLORS.textPrimary,
+  },
+  totalPrice: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.price,
+  },
+  checkoutButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: COLORS.textPrimary,
+    marginTop: 16,
+    marginBottom: 24,
+  },
+  goShoppingButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  goShoppingText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

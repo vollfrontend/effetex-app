@@ -1,0 +1,181 @@
+import { FC, useState, useEffect, useCallback } from 'react';
+import { ScrollView, Platform, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+
+// API
+import { getCategories, getLanguages } from '@/src/api/shopApi';
+
+// State
+import { useStore } from '@/src/state/userStore';
+
+// Components
+import HeaderIOS from '@/src/components/Home/HeaderIOS';
+import ActionBanner from '@/src/components/Home/ActionBanner';
+import PromoSlider from '@/src/components/PromoSlider';
+import PromoBlock from '@/src/components/PromoBlock';
+import SearchBar from '@/src/components/SearchBar';
+import HomeMenu from '@/src/components/HomeMenu';
+import {
+  CategoriesIcon,
+  OrdersIcon,
+  SalesIcon,
+  BellIcon,
+} from '@/src/components/IconButtons';
+import ItemsSlider from '@/src/components/ItemsSlider/ItemsSlider';
+
+// Styles
+import { styles } from './styles';
+import { COLORS } from '@/src/constants/colors';
+
+// Types
+import { RootStackNavigationProp } from '@/src/navigation/types';
+
+const HomeScreen: FC = () => {
+  const navigation = useNavigation<RootStackNavigationProp>();
+  const { setCategories } = useStore();
+
+  const [query, setQuery] = useState<string>('');
+
+  const slides = [
+    {
+      id: '1',
+      image:
+        'https://content1.rozetka.com.ua/banner_main/images_mobile_ua/original/624786376.jpg',
+      content: null,
+    },
+    {
+      id: '2',
+      image:
+        'https://content1.rozetka.com.ua/banner_main/images_mobile_ua/original/626442356.png',
+      content: null,
+    },
+    {
+      id: '3',
+      image:
+        'https://content2.rozetka.com.ua/banner_main/images_mobile_ua/original/626736558.png',
+      content: null,
+    },
+  ];
+
+  const menuItems = [
+    {
+      icon: <CategoriesIcon color={COLORS.primary} size={24} focused={false} />,
+      label: 'Категорії',
+    },
+    {
+      icon: <SalesIcon color={COLORS.primary} size={24} focused={false} />,
+      label: 'Знижки',
+    },
+    {
+      icon: <BellIcon color={COLORS.primary} size={24} focused={false} />,
+      label: 'Сповіщення',
+    },
+    {
+      icon: <OrdersIcon color={COLORS.primary} size={24} focused={false} />,
+      label: 'Замовлення',
+    },
+  ];
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const languages = async () => {
+      try {
+        const data = await getLanguages();
+
+        console.log('languages', data);
+      } catch (err) {
+        console.log('API error:', err);
+      }
+    };
+
+    languages();
+    const load = async () => {
+      try {
+        const data = await getCategories();
+
+        console.log('categories', data);
+
+        const categoriesDate = data.map(category => ({
+          category_id: category.category_id,
+          name: category.name,
+          image: category.image ?? '',
+        }));
+
+        setCategories(categoriesDate);
+      } catch (err) {
+        console.log('API error:', err);
+      }
+    };
+
+    load();
+  }, [setCategories]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setQuery('');
+    }, []),
+  );
+
+  const handleSubmit = (value: string): void => {
+    if (!value.trim()) return;
+    navigation.navigate('Search', { initialQuery: value });
+  };
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="never"
+        style={styles.scrollView}
+      >
+        {Platform.select({
+          ios: <HeaderIOS />,
+        })}
+
+        <ActionBanner />
+
+        <PromoSlider data={slides} />
+        <View style={styles.content}>
+          <View style={styles.promoContainer}>
+            <PromoBlock
+              title="Картка STORE"
+              subtitle="Покупки з перевагами"
+              image="card"
+              color="#312C19"
+            />
+
+            <PromoBlock
+              title="Підписка Smart"
+              subtitle="Безкоштовна доставка"
+              image="subscribe"
+              color="#212E22"
+            />
+          </View>
+
+          {Platform.OS === 'android' && (
+            <SearchBar
+              value={query}
+              onChangeText={setQuery}
+              onSubmit={handleSubmit}
+            />
+          )}
+          <HomeMenu items={menuItems} />
+        </View>
+
+        <ItemsSlider
+          title="Рекомендації на основі ваших переглядів"
+          categoryName="Новинки"
+        />
+
+        <ItemsSlider
+          title="Найкращі пропозиції для вас"
+          categoryName="ТОП продаж"
+        />
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default HomeScreen;
