@@ -14,11 +14,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 
+// i18n
+import { useTranslation } from 'react-i18next';
+
 // Mode types
 type AuthMode = 'login' | 'register';
 
 export const AuthScreen = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [mode, setMode] = useState<AuthMode>('login');
 
   // State for inputs
@@ -84,12 +88,12 @@ export const AuthScreen = () => {
         >
           <View style={styles.header}>
             <Text style={dynamicStyles.title}>
-              {mode === 'login' ? 'Вхід' : 'Реєстрація'}
+              {mode === 'login' ? t('auth.login') : t('auth.register')}
             </Text>
             <Text style={dynamicStyles.subtitle}>
               {mode === 'login'
-                ? 'Вітаємо знову!'
-                : 'Створіть свій акаунт'}
+                ? t('auth.welcomeBack')
+                : t('auth.createAccount')}
             </Text>
           </View>
 
@@ -97,7 +101,7 @@ export const AuthScreen = () => {
             {mode === 'register' && (
               <TextInput
                 style={dynamicStyles.input}
-                placeholder="Ім'я"
+                placeholder={t('auth.name')}
                 placeholderTextColor={theme.textSecondary}
                 value={name}
                 onChangeText={setName}
@@ -116,16 +120,19 @@ export const AuthScreen = () => {
 
             <TextInput
               style={dynamicStyles.input}
-              placeholder="Пароль"
+              placeholder={t('auth.password')}
               placeholderTextColor={theme.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
-            <TouchableOpacity style={dynamicStyles.button} onPress={handleAction}>
+            <TouchableOpacity
+              style={dynamicStyles.button}
+              onPress={handleAction}
+            >
               <Text style={dynamicStyles.buttonText}>
-                {mode === 'login' ? 'Увійти' : 'Зареєструватися'}
+                {mode === 'login' ? t('auth.login') : t('auth.register')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -133,12 +140,12 @@ export const AuthScreen = () => {
           <View style={styles.toggleContainer}>
             <Text style={dynamicStyles.toggleText}>
               {mode === 'login'
-                ? 'Немає акаунту? '
-                : 'Вже маєте акаунт? '}
+                ? t('auth.noAccount')
+                : t('auth.alreadyHaveAccount')}
             </Text>
             <TouchableOpacity onPress={toggleMode}>
               <Text style={dynamicStyles.toggleAction}>
-                {mode === 'login' ? 'Створити' : 'Увійти'}
+                {mode === 'login' ? t('auth.createAccount') : t('auth.login')}
               </Text>
             </TouchableOpacity>
           </View>

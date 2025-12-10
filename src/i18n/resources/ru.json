@@ -29,5 +29,15 @@
     "noLanguages": "Нет языков",
     "settings": "Настройки",
     "help": "Помощь"
+  },
+  "auth": {
+    "login": "Войти",
+    "register": "Зарегистрироваться",
+    "welcomeBack": "Добро пожаловать снова!",
+    "createAccount": "Создать аккаунт",
+    "noAccount": "Нет аккаунта? ",
+    "alreadyHaveAccount": "Уже есть аккаунт? ",
+    "name": "Имя",
+    "password": "Пароль"
   }
 }
