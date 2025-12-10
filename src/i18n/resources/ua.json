@@ -4,7 +4,9 @@
     "welcome": "Ласкаво просимо до застосунку"
   },
   "search": {
-    "placeholder": "Я шукаю..."
+    "title": "Пошук",
+    "placeholder": "Я шукаю...",
+    "nothingFound": "Нічого не знайдено"
   },
   "homeMenu": {
     "categories": "Категорії",

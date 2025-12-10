@@ -6,6 +6,9 @@ import { FlatList, View, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 
+// i18n
+import { useTranslation } from 'react-i18next';
+
 // Components
 import ProductItem from '@/src/components/ItemsSlider/ItemCard';
 import Header from '@/src/components/Header';
@@ -28,6 +31,7 @@ type SearchRouteProp = RouteProp<SearchRouteParams, 'Search'>;
 
 const SearchScreen: FC = () => {
   const route = useRoute<SearchRouteProp>();
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const initial: string = route.params?.initialQuery ?? '';
@@ -49,9 +53,9 @@ const SearchScreen: FC = () => {
   }, [initial]);
 
   return (
-    <View style={[styles.container, {backgroundColor: theme.background}]}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
-        title="Пошук"
+        title={t('search.title')}
         isSearchIncluded
         searchValue={query}
         onSearchChange={(text: string): void => {
@@ -63,7 +67,7 @@ const SearchScreen: FC = () => {
 
       {!results.length ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Нічого не знайдено</Text>
+          <Text style={styles.emptyText}>{t('search.nothingFound')}</Text>
         </View>
       ) : (
         <FlatList

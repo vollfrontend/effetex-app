@@ -4,7 +4,9 @@
     "welcome": "Добро пожаловать в приложение"
   },
   "search": {
-    "placeholder": "Я ищу..."
+    "title": "Поиск",
+    "placeholder": "Я ищу...",
+    "nothingFound": "Ничего не найдено"
   },
   "homeMenu": {
     "categories": "Категории",
