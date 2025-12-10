@@ -22,6 +22,8 @@ export interface CategoriesSlice {
 export interface NavigationSlice {
   currentRoute: string | null;
   setCurrentRoute: (route: string) => void;
+  isSideMenuOpen: boolean;
+  setSideMenuOpen: (isOpen: boolean) => void;
 }
 
 // ---------- CART ----------

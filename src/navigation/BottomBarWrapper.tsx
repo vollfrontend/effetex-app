@@ -1,4 +1,3 @@
-import React from 'react';
 import { BottomBar } from '@/src/components/BottomBar';
 import { ProductBottomBar } from '@/src/components/BottomBar/ProductBottomBar';
 import { nav } from './navigationRef';
@@ -8,6 +7,9 @@ import { useStore } from '@/src/state/userStore';
 export const BottomBarWrapper = () => {
   const currentRoute = useStore(state => state.currentRoute);
 
+  const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
+  const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
+
   // Якщо маршрут ще не встановлено — вважаємо Home
   const route = currentRoute ?? 'Home';
 
@@ -16,20 +18,32 @@ export const BottomBarWrapper = () => {
     return null;
   }
 
-  const activeTab =
-    route === 'Home'
-      ? 'home'
-      : route === 'Search'
-      ? 'search'
-      : route === 'Categories'
-      ? 'categories'
-      : route === 'Cart'
-      ? 'cart'
-      : route === 'Favorites'
-      ? 'favorites'
-      : route === 'Profile'
-      ? 'profile'
-      : 'none';
+  const activeTab = isSideMenuOpen
+    ? 'profile'
+    : route === 'Home'
+    ? 'home'
+    : route === 'Search'
+    ? 'search'
+    : route === 'Categories'
+    ? 'categories'
+    : route === 'Cart'
+    ? 'cart'
+    : route === 'Favorites'
+    ? 'favorites'
+    : route === 'Profile'
+    ? 'profile'
+    : 'none';
 
-  return <BottomBar activeTab={activeTab} onNavigate={screen => nav(screen)} />;
+  return (
+    <BottomBar
+      activeTab={activeTab}
+      onNavigate={screen => {
+        if (screen === 'Profile') {
+          setSideMenuOpen(true);
+        } else {
+          nav(screen);
+        }
+      }}
+    />
+  );
 };

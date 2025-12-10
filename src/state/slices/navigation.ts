@@ -5,4 +5,6 @@ type StoreSet = (partial: RootState | Partial<RootState>) => void;
 export const createNavigationSlice = (set: StoreSet): NavigationSlice => ({
   currentRoute: 'Home',
   setCurrentRoute: name => set({ currentRoute: name }),
+  isSideMenuOpen: false,
+  setSideMenuOpen: isOpen => set({ isSideMenuOpen: isOpen }),
 });

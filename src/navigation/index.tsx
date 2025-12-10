@@ -1,9 +1,10 @@
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
 import { MainLayout } from './MainLayout';
 import { useStore } from '../state/userStore';
 import { BottomBarWrapper } from './BottomBarWrapper';
+import { SideMenu } from '@/src/components/SideMenu';
 import { View } from 'react-native';
 
 // Zustand store
@@ -39,6 +40,9 @@ export const RootNavigation: FC = () => {
 
         {/* Фіксоване меню */}
         <BottomBarWrapper />
+
+        {/* Side Menu Overlay */}
+        <SideMenu />
       </View>
     </NavigationContainer>
   );
