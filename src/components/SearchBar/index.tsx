@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+// i18n
+import { useTranslation } from 'react-i18next';
+
 // Components
 import { SearchIcon, MicIcon, QrCodeIcon } from '@/src/components/IconButtons';
 
@@ -17,7 +20,6 @@ import { useTheme } from '@/src/hooks/useTheme';
 
 interface SearchBarProps {
   value?: string;
-  placeholder?: string;
   showMic?: boolean;
   showQr?: boolean;
   onChangeText?: (text: string) => void;
@@ -28,7 +30,6 @@ interface SearchBarProps {
 
 const SearchBar: FC<SearchBarProps> = ({
   value,
-  placeholder = 'Я шукаю...',
   showMic = true,
   showQr = true,
   onMicPress,
@@ -38,6 +39,7 @@ const SearchBar: FC<SearchBarProps> = ({
 }) => {
   const [localValue, setLocalValue] = useState<string>('');
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // 🟦 Якщо прийшов зовнішній value → оновлюємо localValue
   useEffect(() => {
@@ -68,7 +70,7 @@ const SearchBar: FC<SearchBarProps> = ({
 
       <TextInput
         style={[styles.input, { color: theme.textPrimary }]}
-        placeholder={placeholder}
+        placeholder={t('search.placeholder')}
         placeholderTextColor={theme.textSecondary}
         value={value !== undefined ? value : localValue}
         onChangeText={handleChange}

@@ -66,19 +66,19 @@ const HomeScreen: FC = () => {
   const menuItems = [
     {
       icon: <CategoriesIcon color={theme.primary} size={24} focused={false} />,
-      label: 'Категорії',
+      label: t('homeMenu.categories'),
     },
     {
       icon: <SalesIcon color={theme.primary} size={24} focused={false} />,
-      label: 'Знижки',
+      label: t('homeMenu.sales'),
     },
     {
       icon: <BellIcon color={theme.primary} size={24} focused={false} />,
-      label: 'Сповіщення',
+      label: t('homeMenu.notifications'),
     },
     {
       icon: <OrdersIcon color={theme.primary} size={24} focused={false} />,
-      label: 'Замовлення',
+      label: t('homeMenu.orders'),
     },
   ];
 

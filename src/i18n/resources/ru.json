@@ -2,5 +2,14 @@
   "common": {
     "hello": "Здравствуйте!",
     "welcome": "Добро пожаловать в приложение"
+  },
+  "search": {
+    "placeholder": "Я ищу..."
+  },
+  "homeMenu": {
+    "categories": "Категории",
+    "sales": "Скидки",
+    "notifications": "Сообщения",
+    "orders": "Заказы"
   }
 }

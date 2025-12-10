@@ -2,5 +2,14 @@
   "common": {
     "hello": "Привіт!",
     "welcome": "Ласкаво просимо до застосунку"
+  },
+  "search": {
+    "placeholder": "Я шукаю..."
+  },
+  "homeMenu": {
+    "categories": "Категорії",
+    "sales": "Знижки",
+    "notifications": "Сповіщення",
+    "orders": "Замовлення"
   }
 }
