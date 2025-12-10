@@ -1,5 +1,5 @@
 // React & RN
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -13,7 +13,7 @@ import { SearchIcon, MicIcon, QrCodeIcon } from '@/src/components/IconButtons';
 
 // Styles
 import { styles } from './styles';
-import { COLORS } from '@/src/constants/colors';
+import { useTheme } from '@/src/hooks/useTheme';
 
 interface SearchBarProps {
   value?: string;
@@ -37,6 +37,7 @@ const SearchBar: FC<SearchBarProps> = ({
   onSubmit,
 }) => {
   const [localValue, setLocalValue] = useState<string>('');
+  const theme = useTheme();
 
   // 🟦 Якщо прийшов зовнішній value → оновлюємо localValue
   useEffect(() => {
@@ -50,18 +51,25 @@ const SearchBar: FC<SearchBarProps> = ({
     onChangeText?.(text);
   };
 
-  const handleSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>): void => {
+  const handleSubmit = (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+  ): void => {
     onSubmit?.(e.nativeEvent.text);
   };
 
   return (
-    <View style={styles.searchContainer}>
-      <SearchIcon focused={false} color={COLORS.iconDefault} size={18} />
+    <View
+      style={[
+        styles.searchContainer,
+        { backgroundColor: theme.cardBackground },
+      ]}
+    >
+      <SearchIcon focused={false} color={theme.iconDefault} size={18} />
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: theme.textPrimary }]}
         placeholder={placeholder}
-        placeholderTextColor={COLORS.iconDefault}
+        placeholderTextColor={theme.textSecondary}
         value={value !== undefined ? value : localValue}
         onChangeText={handleChange}
         onSubmitEditing={handleSubmit}
@@ -71,12 +79,12 @@ const SearchBar: FC<SearchBarProps> = ({
       <View style={styles.rightIcons}>
         {showMic && (
           <TouchableOpacity onPress={onMicPress}>
-            <MicIcon focused={false} color={COLORS.iconDefault} size={26} />
+            <MicIcon focused={false} color={theme.iconDefault} size={26} />
           </TouchableOpacity>
         )}
         {showQr && (
           <TouchableOpacity onPress={onQrPress}>
-            <QrCodeIcon focused={false} color={COLORS.iconDefault} size={26} />
+            <QrCodeIcon focused={false} color={theme.iconDefault} size={26} />
           </TouchableOpacity>
         )}
       </View>

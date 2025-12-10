@@ -20,6 +20,7 @@ import type { InnerStackParamList } from '@/src/navigation/innerTypes';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import type { ProductTab } from '@/src/components/Product/ProductTabs';
@@ -54,6 +55,7 @@ interface Product {
 
 export const ProductScreen: FC<Props> = ({ route }) => {
   const { productId } = route.params;
+  const theme = useTheme();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -178,7 +180,9 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   console.log('product-description', product.description);
 
   return (
-    <View style={styles.containerWrapper}>
+    <View
+      style={[styles.containerWrapper, { backgroundColor: theme.background }]}
+    >
       <ProductHeader title={product.name} />
 
       <ScrollView

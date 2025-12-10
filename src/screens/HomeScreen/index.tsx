@@ -26,7 +26,6 @@ import {
 import ItemsSlider from '@/src/components/ItemsSlider/ItemsSlider';
 
 // Styles
-import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
@@ -95,8 +94,6 @@ const HomeScreen: FC = () => {
     const load = async () => {
       try {
         const data = await getCategories();
-
-        console.log('categories', data);
 
         const categoriesDate = data.map(category => ({
           category_id: category.category_id,

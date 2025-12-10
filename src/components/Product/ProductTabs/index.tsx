@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 
 //Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 //Types
 export interface ProductTab {
@@ -18,6 +19,8 @@ interface Props {
 }
 
 const ProductTabs: FC<Props> = ({ tabs, activeTab, onChange }) => {
+  const theme = useTheme();
+
   return (
     <FlatList
       horizontal
@@ -31,7 +34,13 @@ const ProductTabs: FC<Props> = ({ tabs, activeTab, onChange }) => {
             style={[styles.tabItem, isActive && styles.tabActive]}
             onPress={() => onChange(item.key)}
           >
-            <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
+            <Text
+              style={[
+                styles.tabText,
+                isActive && styles.tabTextActive,
+                { color: theme.textPrimary },
+              ]}
+            >
               {item.title}
             </Text>
             {isActive && <View style={styles.underline} />}

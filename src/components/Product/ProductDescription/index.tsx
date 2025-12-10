@@ -11,6 +11,7 @@ import { cleanHtml } from '@/src/utils/cleanHtml';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 interface Props {
   html: string;
@@ -116,6 +117,7 @@ const renderers = {
 const ProductDescription: FC<Props> = ({ html }) => {
   const decodedHtml: string = decode(html);
   const cleanedHtml: string = cleanHtml(decodedHtml);
+  const theme = useTheme();
 
   return (
     <View style={styles.wrapper}>
@@ -124,10 +126,10 @@ const ProductDescription: FC<Props> = ({ html }) => {
         source={{ html: cleanedHtml }}
         renderers={renderers}
         tagsStyles={{
-          body: { color: COLORS.textPrimary },
+          body: { color: theme.textPrimary },
           p: { color: COLORS.textPrimary, marginBottom: 10 },
-          span: { color: COLORS.textPrimary },
-          li: { color: COLORS.textPrimary, marginBottom: 6 },
+          span: { color: theme.textPrimary },
+          li: { color: theme.textPrimary, marginBottom: 6 },
           ul: { paddingLeft: 20, marginBottom: 12 },
         }}
       />

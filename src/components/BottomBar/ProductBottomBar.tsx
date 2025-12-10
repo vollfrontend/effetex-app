@@ -15,7 +15,7 @@ type Props = {
   onBuy: () => void;
 };
 
-import { COLORS } from '@/src/constants/colors';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // ... imports
 
@@ -26,19 +26,21 @@ export const ProductBottomBar: FC<Props> = ({
   onWishlist,
   onBuy,
 }) => {
+  const theme = useTheme();
+
   return (
-    <View style={styles.productWrapper}>
+    <View style={[styles.productWrapper, { backgroundColor: theme.bottomBar }]}>
       <TouchableOpacity onPress={onCompare}>
-        <CompareIcon color={COLORS.iconDefault} size={24} focused={false} />
+        <CompareIcon color={theme.iconDefault} size={24} focused={false} />
       </TouchableOpacity>
 
       <TouchableOpacity onPress={onCart}>
-        <CartIcon color={COLORS.iconDefault} size={24} focused={false} />
+        <CartIcon color={theme.iconDefault} size={24} focused={false} />
       </TouchableOpacity>
 
       <TouchableOpacity onPress={onWishlist}>
         <FavoritesIcon
-          color={isFavorite ? COLORS.iconActive : COLORS.iconDefault}
+          color={isFavorite ? theme.iconActive : theme.iconDefault}
           size={24}
           focused={false}
         />

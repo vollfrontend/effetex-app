@@ -24,9 +24,11 @@ import { Category } from '@/src/api/types';
 // Styles
 import { styles } from './styles';
 import { COLORS } from '@/src/constants/colors';
+import { useTheme } from '@/src/hooks/useTheme';
 
 const CategoriesScreen: FC = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
+  const theme = useTheme();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,7 +76,7 @@ const CategoriesScreen: FC = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Header */}
       <Header title="Категорії" />
 
@@ -85,10 +87,12 @@ const CategoriesScreen: FC = () => {
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.item}
+            style={[styles.item, { borderBottomColor: theme.border }]}
             onPress={() => handlePressCategory(item)} // ← ДОДАНО
           >
-            <Text style={styles.title}>{item.name}</Text>
+            <Text style={[styles.title, { color: theme.textPrimary }]}>
+              {item.name}
+            </Text>
           </TouchableOpacity>
         )}
       />

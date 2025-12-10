@@ -9,33 +9,47 @@ import { BackIcon, ShareIcon } from '@/src/components/IconButtons';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import { ProductHeaderProps } from './types';
 import { RootStackNavigationProp } from '@/src/navigation/types';
-import { COLORS } from '@/src/constants/colors';
 
 const ProductHeader: FC<ProductHeaderProps> = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
+  const theme = useTheme();
 
   return (
     <SafeAreaView
       edges={['top']}
-      style={[styles.header, Platform.OS === 'android' && styles.headerAndroid]}
+      style={[
+        styles.header,
+        Platform.OS === 'android' && styles.headerAndroid,
+        { backgroundColor: theme.background },
+      ]}
     >
       {/* Back Button */}
-      <TouchableOpacity style={styles.leftBtn} onPress={() => navigation.goBack()}>
-        <BackIcon color={COLORS.iconDefault} focused={false} size={24} />
+      <TouchableOpacity
+        style={styles.leftBtn}
+        onPress={() => navigation.goBack()}
+      >
+        <BackIcon color={theme.iconDefault} focused={false} size={24} />
       </TouchableOpacity>
 
       {/* Title */}
-      <Text style={styles.title} numberOfLines={1}>
+      <Text
+        style={[styles.title, { color: theme.textPrimary }]}
+        numberOfLines={1}
+      >
         Огляд
       </Text>
 
       {/* Share Button */}
-      <TouchableOpacity style={styles.rightBtn} onPress={() => console.log('Share')}>
-        <ShareIcon color={COLORS.iconDefault} focused={false} size={24} />
+      <TouchableOpacity
+        style={styles.rightBtn}
+        onPress={() => console.log('Share')}
+      >
+        <ShareIcon color={theme.iconDefault} focused={false} size={24} />
       </TouchableOpacity>
     </SafeAreaView>
   );

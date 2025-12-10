@@ -13,6 +13,7 @@ import { CartIcon } from '@/src/components/IconButtons';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import { ItemCardProps } from './types';
@@ -29,7 +30,7 @@ const ItemCard: FC<ItemCardProps> = ({
 }) => {
   const navigation = useNavigation<RootStackNavigationProp>();
   const addToCart = useStore(state => state.addToCart);
-
+  const theme = useTheme();
   const openProduct = (): void => {
     navigation.navigate('Product', { productId: id });
   };
@@ -48,7 +49,11 @@ const ItemCard: FC<ItemCardProps> = ({
 
   return (
     <TouchableOpacity
-      style={[styles.card, variant === 'list' && styles.listCard]}
+      style={[
+        styles.card,
+        variant === 'list' && styles.listCard,
+        { backgroundColor: theme.cardBackground },
+      ]}
       activeOpacity={0.8}
       onPress={openProduct}
     >
@@ -57,7 +62,9 @@ const ItemCard: FC<ItemCardProps> = ({
       <View style={styles.imageContainer}>
         {badge && (
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{badge}</Text>
+            <Text style={[styles.badgeText, { color: theme.textPrimary }]}>
+              {badge}
+            </Text>
           </View>
         )}
 
@@ -72,22 +79,26 @@ const ItemCard: FC<ItemCardProps> = ({
         />
       </View>
 
-      <Text style={styles.title} numberOfLines={2}>
+      <Text
+        style={[styles.title, { color: theme.textPrimary }]}
+        numberOfLines={2}
+      >
         {title}
       </Text>
 
       <View style={styles.priceContainer}>
         <View>
-          {oldPrice && <Text style={styles.oldPrice}>{oldPrice} ₴</Text>}
-          <Text style={styles.price}>{price} ₴</Text>
+          {oldPrice && (
+            <Text style={[styles.oldPrice, { color: theme.textSecondary }]}>
+              {oldPrice} ₴
+            </Text>
+          )}
+          <Text style={[styles.price, { color: theme.price }]}>{price} ₴</Text>
         </View>
 
         {variant !== 'slider' && (
-          <TouchableOpacity
-            style={styles.buyButton}
-            onPress={handleBuyPress}
-          >
-            <CartIcon color="#fff" size={20} focused={false} />
+          <TouchableOpacity style={styles.buyButton} onPress={handleBuyPress}>
+            <CartIcon color={theme.white} size={20} focused={false} />
           </TouchableOpacity>
         )}
       </View>

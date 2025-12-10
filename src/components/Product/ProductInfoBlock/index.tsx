@@ -11,14 +11,19 @@ import ProductDisclaimer from '@/src/components/Product/ProductDisclaimer';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import { ProductInfoProps } from './types';
 
 const ProductInfoBlock: FC<ProductInfoProps> = ({ product }) => {
+  const theme = useTheme();
+
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.title}>{product.title}</Text>
+      <Text style={[styles.title, { color: theme.textPrimary }]}>
+        {product.title}
+      </Text>
       <ProductAvailability stock_status={product.stock_status} />
       <ProductPrice
         price={product.price}
