@@ -8,6 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useStore } from '@/src/state/userStore';
 import { CartItem } from '@/src/state/types';
 
+// i18n
+import { useTranslation } from 'react-i18next';
+
 // Styles
 import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
@@ -21,6 +24,7 @@ export const CartScreen = () => {
   const removeFromCart = useStore(state => state.removeFromCart);
   const changeQuantity = useStore(state => state.changeQuantity);
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const totalPrice = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -125,7 +129,7 @@ export const CartScreen = () => {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.cardBackground }]}>
         <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
-          Кошик
+          {t('cart.title')}
         </Text>
       </View>
 
@@ -133,14 +137,14 @@ export const CartScreen = () => {
         <View style={styles.emptyContainer}>
           <CartIcon size={64} color="#ccc" focused={false} />
           <Text style={[styles.emptyText, { color: theme.textPrimary }]}>
-            Кошик порожній
+            {t('cart.empty')}
           </Text>
           <TouchableOpacity
             style={styles.goShoppingButton}
             onPress={handleGoShopping}
           >
             <Text style={[styles.goShoppingText, { color: theme.textPrimary }]}>
-              Перейти до покупок
+              {t('cart.goShopping')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -159,7 +163,7 @@ export const CartScreen = () => {
           >
             <View style={styles.totalRow}>
               <Text style={[styles.totalLabel, { color: theme.textPrimary }]}>
-                Разом:
+                {t('cart.total')}:
               </Text>
               <Text style={[styles.totalPrice, { color: theme.textPrimary }]}>
                 {totalPrice} ₴
@@ -172,7 +176,7 @@ export const CartScreen = () => {
                   { color: theme.textPrimary },
                 ]}
               >
-                Оформити замовлення
+                {t('cart.checkout')}
               </Text>
             </TouchableOpacity>
           </View>

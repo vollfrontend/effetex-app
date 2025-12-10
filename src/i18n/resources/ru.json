@@ -41,5 +41,12 @@
     "alreadyHaveAccount": "Уже есть аккаунт? ",
     "name": "Имя",
     "password": "Пароль"
+  },
+  "cart": {
+    "title": "Корзина",
+    "empty": "Корзина пуста",
+    "goShopping": "Перейти к покупкам",
+    "total": "Всего:",
+    "checkout": "Оформить заказ"
   }
 }
