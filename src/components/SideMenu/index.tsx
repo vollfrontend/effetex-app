@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   Switch,
+  PanResponder,
 } from 'react-native';
 import { useStore } from '@/src/state/userStore';
 import { styles, CONFIG } from './styles';
@@ -59,6 +60,41 @@ export const SideMenu = () => {
     }
   }, [isSideMenuOpen, slideAnim, fadeAnim]);
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+         // Detect horizontal swipe
+         return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 10;
+      },
+      onPanResponderGrant: () => {
+         slideAnim.stopAnimation((value) => {
+            slideAnim.setOffset(value);
+            slideAnim.setValue(0);
+         });
+      },
+      onPanResponderMove: (_, gestureState) => {
+          // Only allow dragging right (closing)
+          if (gestureState.dx > 0) {
+              slideAnim.setValue(gestureState.dx);
+          }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+          slideAnim.flattenOffset();
+           // Close if dragged right significantly or flicked
+           if (gestureState.dx > CONFIG.MENU_WIDTH * 0.25 || gestureState.vx > 0.5) {
+               setSideMenuOpen(false);
+           } else {
+               // Snap back
+               Animated.spring(slideAnim, {
+                   toValue: 0,
+                   useNativeDriver: true
+               }).start();
+           }
+      }
+    })
+  ).current;
+
   const handleClose = () => {
     setSideMenuOpen(false);
   };
@@ -90,6 +126,7 @@ export const SideMenu = () => {
             transform: [{ translateX: slideAnim }],
           },
         ]}
+        {...panResponder.panHandlers}
       >
         <Text style={styles.title}>Menu</Text>
 
