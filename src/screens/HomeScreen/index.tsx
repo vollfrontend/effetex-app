@@ -1,11 +1,14 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { ScrollView, Platform, View, StyleSheet } from 'react-native';
+import { ScrollView, Platform, View, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 // API
 import { getCategories, getLanguages } from '@/src/api/shopApi';
+
+// i18n
+import { useTranslation } from 'react-i18next';
 
 // State
 import { useStore } from '@/src/state/userStore';
@@ -33,6 +36,7 @@ import { RootStackNavigationProp } from '@/src/navigation/types';
 
 const HomeScreen: FC = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
+  const { t } = useTranslation();
   const { setCategories } = useStore();
   const theme = useTheme();
 
@@ -156,6 +160,8 @@ const HomeScreen: FC = () => {
         {Platform.select({
           ios: <HeaderIOS />,
         })}
+
+        <Text>{t('common.hello')}</Text>
 
         <ActionBanner />
 
