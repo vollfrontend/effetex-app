@@ -16,18 +16,32 @@ import { AuthScreen } from '@/src/screens/AuthScreen';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import type { InnerStackParamList } from './innerTypes';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const InnerStack = createNativeStackNavigator<InnerStackParamList>();
 
 export const MainLayout = () => {
+  const theme = useTheme();
+
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      ...styles.container,
+      backgroundColor: theme.background,
+    },
+    content: {
+      ...styles.content,
+      backgroundColor: theme.background,
+    },
+  });
+
   return (
-    <View style={styles.container}>
+    <View style={dynamicStyles.container}>
       <InnerStack.Navigator
-        screenOptions={{ headerShown: false, contentStyle: styles.content }}
+        screenOptions={{ headerShown: false, contentStyle: dynamicStyles.content }}
       >
         <InnerStack.Screen name="Home" component={HomeScreen} />
         <InnerStack.Screen name="Search" component={SearchScreen} />

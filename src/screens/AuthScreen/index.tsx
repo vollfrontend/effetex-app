@@ -8,20 +8,60 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Mode types
 type AuthMode = 'login' | 'register';
 
 export const AuthScreen = () => {
+  const theme = useTheme();
   const [mode, setMode] = useState<AuthMode>('login');
 
   // State for inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      ...styles.container,
+      backgroundColor: theme.background,
+    },
+    title: {
+      ...styles.title,
+      color: theme.primary,
+    },
+    subtitle: {
+      ...styles.subtitle,
+      color: theme.textSecondary,
+    },
+    input: {
+      ...styles.input,
+      backgroundColor: theme.cardBackground,
+      color: theme.textPrimary,
+      borderColor: theme.border,
+    },
+    button: {
+      ...styles.button,
+      backgroundColor: theme.primary,
+    },
+    buttonText: {
+      ...styles.buttonText,
+      color: theme.white,
+    },
+    toggleText: {
+      ...styles.toggleText,
+      color: theme.textSecondary,
+    },
+    toggleAction: {
+      ...styles.toggleAction,
+      color: theme.primary,
+    },
+  });
 
   const handleAction = () => {
     if (mode === 'login') {
@@ -36,17 +76,17 @@ export const AuthScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={dynamicStyles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardAvoid}
         >
           <View style={styles.header}>
-            <Text style={styles.title}>
+            <Text style={dynamicStyles.title}>
               {mode === 'login' ? 'Вхід' : 'Реєстрація'}
             </Text>
-            <Text style={styles.subtitle}>
+            <Text style={dynamicStyles.subtitle}>
               {mode === 'login'
                 ? 'Вітаємо знову!'
                 : 'Створіть свій акаунт'}
@@ -56,16 +96,18 @@ export const AuthScreen = () => {
           <View style={styles.form}>
             {mode === 'register' && (
               <TextInput
-                style={styles.input}
+                style={dynamicStyles.input}
                 placeholder="Ім'я"
+                placeholderTextColor={theme.textSecondary}
                 value={name}
                 onChangeText={setName}
               />
             )}
 
             <TextInput
-              style={styles.input}
+              style={dynamicStyles.input}
               placeholder="Email"
+              placeholderTextColor={theme.textSecondary}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -73,28 +115,29 @@ export const AuthScreen = () => {
             />
 
             <TextInput
-              style={styles.input}
+              style={dynamicStyles.input}
               placeholder="Пароль"
+              placeholderTextColor={theme.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleAction}>
-              <Text style={styles.buttonText}>
+            <TouchableOpacity style={dynamicStyles.button} onPress={handleAction}>
+              <Text style={dynamicStyles.buttonText}>
                 {mode === 'login' ? 'Увійти' : 'Зареєструватися'}
               </Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.toggleContainer}>
-            <Text style={styles.toggleText}>
+            <Text style={dynamicStyles.toggleText}>
               {mode === 'login'
                 ? 'Немає акаунту? '
                 : 'Вже маєте акаунт? '}
             </Text>
             <TouchableOpacity onPress={toggleMode}>
-              <Text style={styles.toggleAction}>
+              <Text style={dynamicStyles.toggleAction}>
                 {mode === 'login' ? 'Створити' : 'Увійти'}
               </Text>
             </TouchableOpacity>

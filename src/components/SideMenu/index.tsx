@@ -7,10 +7,11 @@ import {
   TouchableWithoutFeedback,
   Switch,
   PanResponder,
+  StyleSheet,
 } from 'react-native';
 import { useStore } from '@/src/state/userStore';
 import { styles, CONFIG } from './styles';
-import { COLORS } from '@/src/constants/colors';
+import { useTheme } from '@/src/hooks/useTheme';
 import { nav } from '@/src/navigation/navigationRef';
 
 export const SideMenu = () => {
@@ -18,10 +19,11 @@ export const SideMenu = () => {
   const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
 
   // Settings
-  const theme = useStore(state => state.theme);
+  const themeMode = useStore(state => state.theme);
   const setTheme = useStore(state => state.setTheme);
   const language = useStore(state => state.language);
   const setLanguage = useStore(state => state.setLanguage);
+  const theme = useTheme();
 
   const slideAnim = useRef(new Animated.Value(CONFIG.MENU_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -104,12 +106,44 @@ export const SideMenu = () => {
   };
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(themeMode === 'light' ? 'dark' : 'light');
   };
 
   const toggleLanguage = () => {
     setLanguage(language === 'uk' ? 'en' : 'uk');
   };
+
+  // Dynamic styles based on theme
+  const dynamicStyles = StyleSheet.create({
+    menu: {
+      ...styles.menu,
+      backgroundColor: theme.cardBackground,
+    },
+    title: {
+      ...styles.title,
+      color: theme.textPrimary,
+    },
+    signInButton: {
+      ...styles.signInButton,
+      backgroundColor: theme.primary,
+    },
+    signInText: {
+      ...styles.signInText,
+      color: theme.white,
+    },
+    menuItem: {
+      ...styles.menuItem,
+      borderBottomColor: theme.border,
+    },
+    menuItemText: {
+      ...styles.menuItemText,
+      color: theme.textPrimary,
+    },
+    menuItemValue: {
+      ...styles.menuItemValue,
+      color: theme.primary,
+    },
+  });
 
   // We need to render it always to allow animation to finish,
   // but we can disable pointer events when closed.
@@ -125,51 +159,54 @@ export const SideMenu = () => {
       {/* Menu Panel */}
       <Animated.View
         style={[
-          styles.menu,
+          dynamicStyles.menu,
           {
             transform: [{ translateX: slideAnim }],
           },
         ]}
         {...panResponder.panHandlers}
       >
-        <Text style={styles.title}>Menu</Text>
+        <Text style={dynamicStyles.title}>Menu</Text>
 
         <TouchableOpacity
-          style={styles.signInButton}
+          style={dynamicStyles.signInButton}
           onPress={() => {
             handleClose();
             nav('Auth');
           }}
         >
-          <Text style={styles.signInText}>Увійти</Text>
+          <Text style={dynamicStyles.signInText}>Увійти</Text>
         </TouchableOpacity>
 
         {/* Theme Toggle */}
-        <View style={styles.menuItem}>
-          <Text style={styles.menuItemText}>Темна тема</Text>
+        <View style={dynamicStyles.menuItem}>
+          <Text style={dynamicStyles.menuItemText}>Темна тема</Text>
           <Switch
-            value={theme === 'dark'}
+            value={themeMode === 'dark'}
             onValueChange={toggleTheme}
-            trackColor={{ false: '#767577', true: COLORS.primary }}
-            thumbColor={COLORS.white}
+            trackColor={{ false: '#767577', true: theme.primary }}
+            thumbColor={theme.white}
           />
         </View>
 
         {/* Language Selector */}
-        <TouchableOpacity style={styles.menuItem} onPress={toggleLanguage}>
-          <Text style={styles.menuItemText}>Мова</Text>
-          <Text style={styles.menuItemValue}>
+        <TouchableOpacity
+          style={dynamicStyles.menuItem}
+          onPress={toggleLanguage}
+        >
+          <Text style={dynamicStyles.menuItemText}>Мова</Text>
+          <Text style={dynamicStyles.menuItemValue}>
             {language === 'uk' ? 'UA' : 'EN'}
           </Text>
         </TouchableOpacity>
 
         {/* Example items */}
-        <TouchableOpacity style={styles.menuItem} onPress={handleClose}>
-          <Text style={styles.menuItemText}>Налаштування</Text>
+        <TouchableOpacity style={dynamicStyles.menuItem} onPress={handleClose}>
+          <Text style={dynamicStyles.menuItemText}>Налаштування</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={handleClose}>
-          <Text style={styles.menuItemText}>Допомога</Text>
+        <TouchableOpacity style={dynamicStyles.menuItem} onPress={handleClose}>
+          <Text style={dynamicStyles.menuItemText}>Допомога</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>

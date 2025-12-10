@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { ScrollView, Platform, View } from 'react-native';
+import { ScrollView, Platform, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -27,7 +27,7 @@ import ItemsSlider from '@/src/components/ItemsSlider/ItemsSlider';
 
 // Styles
 import { styles } from './styles';
-import { COLORS } from '@/src/constants/colors';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import { RootStackNavigationProp } from '@/src/navigation/types';
@@ -35,6 +35,7 @@ import { RootStackNavigationProp } from '@/src/navigation/types';
 const HomeScreen: FC = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
   const { setCategories } = useStore();
+  const theme = useTheme();
 
   const [query, setQuery] = useState<string>('');
 
@@ -61,19 +62,19 @@ const HomeScreen: FC = () => {
 
   const menuItems = [
     {
-      icon: <CategoriesIcon color={COLORS.primary} size={24} focused={false} />,
+      icon: <CategoriesIcon color={theme.primary} size={24} focused={false} />,
       label: 'Категорії',
     },
     {
-      icon: <SalesIcon color={COLORS.primary} size={24} focused={false} />,
+      icon: <SalesIcon color={theme.primary} size={24} focused={false} />,
       label: 'Знижки',
     },
     {
-      icon: <BellIcon color={COLORS.primary} size={24} focused={false} />,
+      icon: <BellIcon color={theme.primary} size={24} focused={false} />,
       label: 'Сповіщення',
     },
     {
-      icon: <OrdersIcon color={COLORS.primary} size={24} focused={false} />,
+      icon: <OrdersIcon color={theme.primary} size={24} focused={false} />,
       label: 'Замовлення',
     },
   ];
@@ -123,12 +124,37 @@ const HomeScreen: FC = () => {
     navigation.navigate('Search', { initialQuery: value });
   };
 
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    text: {
+      color: theme.textPrimary,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    content: {
+      paddingHorizontal: 16,
+    },
+    promoContainer: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      gap: 10,
+    },
+  });
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={dynamicStyles.container} edges={['top']}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="never"
-        style={styles.scrollView}
+        style={dynamicStyles.scrollView}
       >
         {Platform.select({
           ios: <HeaderIOS />,
@@ -137,8 +163,8 @@ const HomeScreen: FC = () => {
         <ActionBanner />
 
         <PromoSlider data={slides} />
-        <View style={styles.content}>
-          <View style={styles.promoContainer}>
+        <View style={dynamicStyles.content}>
+          <View style={dynamicStyles.promoContainer}>
             <PromoBlock
               title="Картка STORE"
               subtitle="Покупки з перевагами"

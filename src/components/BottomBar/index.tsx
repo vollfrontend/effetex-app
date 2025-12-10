@@ -14,9 +14,7 @@ import {
 
 // Styles
 import { styles } from './styles';
-
-// Types
-import { COLORS } from '@/src/constants/colors';
+import { useTheme } from '@/src/hooks/useTheme';
 
 type BottomBarProps = {
   activeTab: BottomTabKey;
@@ -42,12 +40,22 @@ export type BottomTabNavigate =
   | 'Favorites'
   | 'Profile';
 
-const iconColor = (focused: boolean): string =>
-  focused ? COLORS.iconActive : COLORS.iconDefault;
-
 export const BottomBar: FC<BottomBarProps> = ({ activeTab, onNavigate }) => {
+  const theme = useTheme();
+
+  const iconColor = (focused: boolean): string =>
+    focused ? theme.iconActive : theme.iconDefault;
+
+  const dynamicStyles = {
+    wrapper: {
+      ...styles.wrapper,
+      backgroundColor: theme.bottomBar,
+      borderTopColor: theme.border,
+    },
+  };
+
   return (
-    <View style={styles.wrapper}>
+    <View style={dynamicStyles.wrapper}>
       <TouchableOpacity onPress={() => onNavigate('Home')}>
         <HomeIcon
           color={iconColor(activeTab === 'home')}
