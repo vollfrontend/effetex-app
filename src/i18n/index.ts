@@ -38,17 +38,24 @@ export const changeLanguage = async (lang: AvailableLang): Promise<void> => {
 };
 
 export const initI18n = async (): Promise<void> => {
+  // Якщо i18n вже ініціалізований, не ініціалізуємо знову
+  if (i18n.isInitialized) {
+    return;
+  }
+
   const lang = await detectLanguage();
 
-  await i18n.use(initReactI18next).init({
-    compatibilityJSON: 'v4',
-    lng: lang,
-    fallbackLng: 'ua',
-    resources,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+  await i18n
+    .use(initReactI18next) // ⭐ ВАЖЛИВО
+    .init({
+      compatibilityJSON: 'v4',
+      resources,
+      lng: lang,
+      fallbackLng: 'ua',
+      interpolation: {
+        escapeValue: false,
+      },
+    });
 };
 
 export default i18n;
