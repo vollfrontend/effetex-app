@@ -12,6 +12,7 @@ import { FavoritesScreen } from '@/src/screens/FavoritesScreen';
 import { ProfileScreen } from '@/src/screens/ProfileScreen';
 import { ProductScreen } from '@/src/screens/ProductScreen';
 import CategoryProductsScreen from '@/src/screens/CategoryProductsScreen';
+import { AuthScreen } from '@/src/screens/AuthScreen';
 
 // Styles
 import { styles } from './styles';
@@ -39,6 +40,7 @@ export const MainLayout = () => {
           name="CategoryProducts"
           component={CategoryProductsScreen as any}
         />
+        <InnerStack.Screen name="Auth" component={AuthScreen} />
       </InnerStack.Navigator>
     </View>
   );

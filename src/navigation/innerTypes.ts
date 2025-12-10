@@ -8,4 +8,5 @@ export type InnerStackParamList = {
   Product: { productId: string };
   BottomBarWrapper: undefined;
   CategoryProducts: { categoryId: number; categoryName: string };
+  Auth: undefined;
 };

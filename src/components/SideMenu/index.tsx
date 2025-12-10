@@ -5,15 +5,13 @@ import {
   TouchableOpacity,
   Animated,
   TouchableWithoutFeedback,
-  Dimensions,
   Switch,
   PanResponder,
 } from 'react-native';
 import { useStore } from '@/src/state/userStore';
 import { styles, CONFIG } from './styles';
 import { COLORS } from '@/src/constants/colors';
-
-const { width } = Dimensions.get('window');
+import { nav } from '@/src/navigation/navigationRef';
 
 export const SideMenu = () => {
   const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
@@ -64,35 +62,41 @@ export const SideMenu = () => {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-         // Detect horizontal swipe
-         return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 10;
+        // Detect horizontal swipe
+        return (
+          Math.abs(gestureState.dx) > Math.abs(gestureState.dy) &&
+          Math.abs(gestureState.dx) > 10
+        );
       },
       onPanResponderGrant: () => {
-         slideAnim.stopAnimation((value) => {
-            slideAnim.setOffset(value);
-            slideAnim.setValue(0);
-         });
+        slideAnim.stopAnimation(value => {
+          slideAnim.setOffset(value);
+          slideAnim.setValue(0);
+        });
       },
       onPanResponderMove: (_, gestureState) => {
-          // Only allow dragging right (closing)
-          if (gestureState.dx > 0) {
-              slideAnim.setValue(gestureState.dx);
-          }
+        // Only allow dragging right (closing)
+        if (gestureState.dx > 0) {
+          slideAnim.setValue(gestureState.dx);
+        }
       },
       onPanResponderRelease: (_, gestureState) => {
-          slideAnim.flattenOffset();
-           // Close if dragged right significantly or flicked
-           if (gestureState.dx > CONFIG.MENU_WIDTH * 0.25 || gestureState.vx > 0.5) {
-               setSideMenuOpen(false);
-           } else {
-               // Snap back
-               Animated.spring(slideAnim, {
-                   toValue: 0,
-                   useNativeDriver: true
-               }).start();
-           }
-      }
-    })
+        slideAnim.flattenOffset();
+        // Close if dragged right significantly or flicked
+        if (
+          gestureState.dx > CONFIG.MENU_WIDTH * 0.25 ||
+          gestureState.vx > 0.5
+        ) {
+          setSideMenuOpen(false);
+        } else {
+          // Snap back
+          Animated.spring(slideAnim, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    }),
   ).current;
 
   const handleClose = () => {
@@ -100,11 +104,11 @@ export const SideMenu = () => {
   };
 
   const toggleTheme = () => {
-      setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   const toggleLanguage = () => {
-      setLanguage(language === 'uk' ? 'en' : 'uk');
+    setLanguage(language === 'uk' ? 'en' : 'uk');
   };
 
   // We need to render it always to allow animation to finish,
@@ -113,8 +117,8 @@ export const SideMenu = () => {
 
   return (
     <View style={styles.overlay} pointerEvents={pointerEvents}>
-       {/* Backdrop */}
-       <TouchableWithoutFeedback onPress={handleClose}>
+      {/* Backdrop */}
+      <TouchableWithoutFeedback onPress={handleClose}>
         <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]} />
       </TouchableWithoutFeedback>
 
@@ -130,11 +134,13 @@ export const SideMenu = () => {
       >
         <Text style={styles.title}>Menu</Text>
 
-        <TouchableOpacity style={styles.signInButton} onPress={() => {
-            // Handle Sign In logic or navigation
-            console.log('Sign In Pressed');
+        <TouchableOpacity
+          style={styles.signInButton}
+          onPress={() => {
             handleClose();
-        }}>
+            nav('Auth');
+          }}
+        >
           <Text style={styles.signInText}>Увійти</Text>
         </TouchableOpacity>
 
@@ -152,7 +158,9 @@ export const SideMenu = () => {
         {/* Language Selector */}
         <TouchableOpacity style={styles.menuItem} onPress={toggleLanguage}>
           <Text style={styles.menuItemText}>Мова</Text>
-          <Text style={styles.menuItemValue}>{language === 'uk' ? 'UA' : 'EN'}</Text>
+          <Text style={styles.menuItemValue}>
+            {language === 'uk' ? 'UA' : 'EN'}
+          </Text>
         </TouchableOpacity>
 
         {/* Example items */}
@@ -163,7 +171,6 @@ export const SideMenu = () => {
         <TouchableOpacity style={styles.menuItem} onPress={handleClose}>
           <Text style={styles.menuItemText}>Допомога</Text>
         </TouchableOpacity>
-
       </Animated.View>
     </View>
   );
