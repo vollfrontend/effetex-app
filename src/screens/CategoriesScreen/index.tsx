@@ -18,41 +18,50 @@ import { getCategories } from '@/src/api/shopApi';
 // Components
 import Header from '@/src/components/Header';
 
+// Hooks
+import { useLanguage } from '@/src/hooks/useLanguage';
+import { useTheme } from '@/src/hooks/useTheme';
+
 // Types
 import { Category } from '@/src/api/types';
 
 // Styles
 import { styles } from './styles';
 import { COLORS } from '@/src/constants/colors';
-import { useTheme } from '@/src/hooks/useTheme';
 
 const CategoriesScreen: FC = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
   const theme = useTheme();
+  const { currentLanguageId } = useLanguage();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch categories on mount
+  // Fetch categories on mount and when language changes
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true);
-        const data = await getCategories(4);
+        setError(null);
+        console.log('📦 Loading categories for language ID:', currentLanguageId);
+        const data = await getCategories(currentLanguageId);
 
-        console.log(data);
+        console.log('✅ Categories loaded:', data.length);
         setCategories(data);
       } catch (err) {
         setError('Не вдалося отримати категорії');
-        console.log('API error:', err);
+        console.log('❌ API error:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    load();
-  }, []);
+    // Завантажуємо тільки якщо є ID мови
+    if (currentLanguageId > 0) {
+      load();
+    }
+  }, [currentLanguageId]); // Перезавантажувати при зміні мови
 
   const handlePressCategory = (item: Category): void => {
     navigation.navigate('CategoryProducts', {
