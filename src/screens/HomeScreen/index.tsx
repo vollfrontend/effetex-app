@@ -93,7 +93,7 @@ const HomeScreen: FC = () => {
     languages();
     const load = async () => {
       try {
-        const data = await getCategories();
+        const data = await getCategories(4);
 
         const categoriesDate = data.map(category => ({
           category_id: category.category_id,

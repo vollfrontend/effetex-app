@@ -55,6 +55,8 @@ export function getLanguages(): Promise<Language[]> {
 
 // 2) Категорії
 export function getCategories(languageId?: number): Promise<Category[]> {
+  console.log('languageId', languageId);
+  console.log('route check', `/api/product/getCategory/language_id=${languageId ?? 1}/`);
   return request<Category[]>({
     route: `/api/product/getCategory/language_id=${languageId ?? 1}/`,
   });

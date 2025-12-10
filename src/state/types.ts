@@ -39,6 +39,22 @@ export interface CartSlice {
   clearCart: () => void;
 }
 
+// ---------- LANGUAGE ----------
+export type LanguageCode = 'uk' | 'en' | 'ru' | 'pl';
+
+export interface Language {
+  code: LanguageCode;
+  name: string;
+  nativeName: string;
+}
+
+export interface LanguageSlice {
+  availableLanguages: Language[];
+  currentLanguage: LanguageCode;
+  setCurrentLanguage: (languageCode: LanguageCode) => void;
+  getCurrentLanguageObject: () => Language;
+}
+
 // ---------- SETTINGS ----------
 export interface SettingsSlice {
   theme: 'light' | 'dark';
@@ -53,4 +69,5 @@ export interface RootState
     CategoriesSlice,
     NavigationSlice,
     CartSlice,
+    LanguageSlice,
     SettingsSlice {}

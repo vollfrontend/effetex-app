@@ -11,6 +11,7 @@ import { createCategoriesSlice } from '@/src/state/slices/categoriesSlice';
 import { createCartSlice } from '@/src/state/slices/cartSlice';
 
 import { createSettingsSlice } from '@/src/state/slices/settingsSlice';
+import { createLanguageSlice } from '@/src/state/slices/languageSlice';
 
 // Types
 import type { RootState } from '@/src/state/types';
@@ -22,6 +23,7 @@ export const useStore = create<RootState>()(
       ...createNavigationSlice(set),
       ...createCategoriesSlice(set, get),
       ...createCartSlice(set, get),
+      ...createLanguageSlice(set),
       ...createSettingsSlice(set),
     })),
     { name: 'UserStore' },

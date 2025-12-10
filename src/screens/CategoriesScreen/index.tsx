@@ -39,7 +39,9 @@ const CategoriesScreen: FC = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const data = await getCategories();
+        const data = await getCategories(4);
+
+        console.log(data);
         setCategories(data);
       } catch (err) {
         setError('Не вдалося отримати категорії');

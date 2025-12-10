@@ -21,8 +21,9 @@ export const SideMenu = () => {
   // Settings
   const themeMode = useStore(state => state.theme);
   const setTheme = useStore(state => state.setTheme);
-  const language = useStore(state => state.language);
-  const setLanguage = useStore(state => state.setLanguage);
+  const currentLanguage = useStore(state => state.currentLanguage);
+  const availableLanguages = useStore(state => state.availableLanguages);
+  const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
   const theme = useTheme();
 
   const slideAnim = useRef(new Animated.Value(CONFIG.MENU_WIDTH)).current;
@@ -110,7 +111,12 @@ export const SideMenu = () => {
   };
 
   const toggleLanguage = () => {
-    setLanguage(language === 'uk' ? 'en' : 'uk');
+    // Cycle through available languages
+    const currentIndex = availableLanguages.findIndex(
+      lang => lang.code === currentLanguage
+    );
+    const nextIndex = (currentIndex + 1) % availableLanguages.length;
+    setCurrentLanguage(availableLanguages[nextIndex].code);
   };
 
   // Dynamic styles based on theme
@@ -196,7 +202,7 @@ export const SideMenu = () => {
         >
           <Text style={dynamicStyles.menuItemText}>Мова</Text>
           <Text style={dynamicStyles.menuItemValue}>
-            {language === 'uk' ? 'UA' : 'EN'}
+            {availableLanguages.find(lang => lang.code === currentLanguage)?.nativeName || 'UA'}
           </Text>
         </TouchableOpacity>
 
