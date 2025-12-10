@@ -1,7 +1,10 @@
 // src/state/types.ts
 
-import type { Category } from '@/src/api/types';
+import type { Category, Language } from '@/src/api/types';
 import type { Product } from '@/src/api/products';
+
+// Re-export Language for convenience
+export type { Language };
 
 // ---------- FAVORITES ----------
 export interface FavoritesSlice {
@@ -40,19 +43,18 @@ export interface CartSlice {
 }
 
 // ---------- LANGUAGE ----------
-export type LanguageCode = 'uk' | 'en' | 'ru' | 'pl';
-
-export interface Language {
-  code: LanguageCode;
-  name: string;
-  nativeName: string;
-}
+// Використовуємо тип Language з API
 
 export interface LanguageSlice {
   availableLanguages: Language[];
-  currentLanguage: LanguageCode;
-  setCurrentLanguage: (languageCode: LanguageCode) => void;
-  getCurrentLanguageObject: () => Language;
+  currentLanguage: string; // code з Language
+  currentLanguageId: number; // language_id з Language
+  isLanguagesLoaded: boolean;
+  setAvailableLanguages: (languages: Language[]) => void;
+  setCurrentLanguage: (languageCode: string) => void;
+  setCurrentLanguageById: (languageId: number) => void;
+  getCurrentLanguageObject: () => Language | undefined;
+  loadLanguages: () => Promise<void>;
 }
 
 // ---------- SETTINGS ----------

@@ -15,6 +15,7 @@ import { products, Product } from '@/src/api/products';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 type SearchRouteParams = {
@@ -27,6 +28,7 @@ type SearchRouteProp = RouteProp<SearchRouteParams, 'Search'>;
 
 const SearchScreen: FC = () => {
   const route = useRoute<SearchRouteProp>();
+  const theme = useTheme();
 
   const initial: string = route.params?.initialQuery ?? '';
 
@@ -47,7 +49,7 @@ const SearchScreen: FC = () => {
   }, [initial]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <Header
         title="Пошук"
         isSearchIncluded

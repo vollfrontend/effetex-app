@@ -47,8 +47,9 @@ async function request<T>(
    =========================== */
 
 // 1) Мови
-export function getLanguages(): Promise<Language[]> {
-  return request<Language[]>({
+// API може повертати як масив, так і об'єкт з мовами
+export function getLanguages(): Promise<Language[] | Record<string, Language>> {
+  return request<Language[] | Record<string, Language>>({
     route: `/api/product/getLanguages/`,
   });
 }

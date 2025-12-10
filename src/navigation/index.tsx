@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
 import { MainLayout } from './MainLayout';
@@ -23,6 +23,14 @@ function getActiveRouteName(state: any): string | null {
 
 export const RootNavigation: FC = () => {
   const setCurrentRoute = useStore(s => s.setCurrentRoute);
+  const loadLanguages = useStore(s => s.loadLanguages);
+
+  // Завантажити мови при старті додатку
+  useEffect(() => {
+    console.log('🚀 App started, loading languages...');
+    loadLanguages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Викликати тільки один раз при монтуванні
 
   const handleStateChange = useCallback(
     (state: any) => {

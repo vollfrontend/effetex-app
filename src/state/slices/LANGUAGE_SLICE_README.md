@@ -1,14 +1,34 @@
-# Language Slice
+# Language Slice - Оновлено для роботи з API
 
-Цей slice управляє мовами в додатку.
+Цей slice управляє мовами в додатку, завантажуючи їх з API.
 
 ## Структура
 
 ### Доступні мови
-- **Українська** (uk) - мова за замовчуванням
-- **English** (en)
-- **Русский** (ru)
-- **Polski** (pl)
+Мови завантажуються динамічно з API через запит `getLanguages()`.
+Мова за замовчуванням: **Українська** (uk)
+
+### Формат Language з API
+```typescript
+interface Language {
+  language_id: number;  // ID мови
+  name: string;         // Назва мови
+  code: string;         // Код мови (uk, en, ru, pl, тощо)
+}
+```
+
+## Автоматичне завантаження
+
+Мови автоматично завантажуються при старті додатку в `RootNavigation` компоненті.
+
+```typescript
+// src/navigation/index.tsx
+useEffect(() => {
+  if (!isLanguagesLoaded) {
+    loadLanguages();
+  }
+}, [loadLanguages, isLanguagesLoaded]);
+```
 
 ## Хук useLanguage
 
@@ -19,17 +39,21 @@ import { useLanguage } from '@/src/hooks/useLanguage';
 
 const MyComponent = () => {
   const {
-    currentLanguage,           // Код поточної мови
-    currentLanguageObject,     // Об'єкт поточної мови
-    availableLanguages,        // Всі доступні мови
-    setCurrentLanguage,        // Функція для зміни мови
+    currentLanguage,           // Код поточної мови (string)
+    currentLanguageId,         // ID поточної мови (number)
+    currentLanguageObject,     // Об'єкт поточної мови (Language | undefined)
+    availableLanguages,        // Всі доступні мови (Language[])
+    isLanguagesLoaded,         // Чи завантажені мови (boolean)
+    setCurrentLanguage,        // Функція для зміни мови за кодом
+    setCurrentLanguageById,    // Функція для зміни мови за ID
+    loadLanguages,             // Функція для завантаження мов
     cycleLanguage,             // Циклічне перемикання мов
     isCurrentLanguage,         // Перевірка, чи є мова поточною
   } = useLanguage();
 
   return (
     <View>
-      <Text>Поточна мова: {currentLanguageObject.nativeName}</Text>
+      <Text>Поточна мова: {currentLanguageObject?.name}</Text>
       <Button onPress={cycleLanguage} title="Наступна мова" />
     </View>
   );
@@ -47,12 +71,13 @@ import { useStore } from '@/src/state/userStore';
 
 const MyComponent = () => {
   const currentLanguage = useStore(state => state.currentLanguage);
+  const currentLanguageId = useStore(state => state.currentLanguageId);
 
-  return <Text>Поточна мова: {currentLanguage}</Text>;
+  return <Text>Поточна мова: {currentLanguage} (ID: {currentLanguageId})</Text>;
 };
 ```
 
-### Зміна мови
+### Зміна мови за кодом
 
 ```typescript
 import { useStore } from '@/src/state/userStore';
@@ -66,6 +91,24 @@ const LanguageSelector = () => {
 
   return (
     <Button onPress={changeToEnglish} title="Switch to English" />
+  );
+};
+```
+
+### Зміна мови за ID
+
+```typescript
+import { useStore } from '@/src/state/userStore';
+
+const LanguageSelector = () => {
+  const setCurrentLanguageById = useStore(state => state.setCurrentLanguageById);
+
+  const changeToLanguage = (languageId: number) => {
+    setCurrentLanguageById(languageId);
+  };
+
+  return (
+    <Button onPress={() => changeToLanguage(2)} title="Change Language" />
   );
 };
 ```
@@ -84,13 +127,13 @@ const LanguageList = () => {
     <View>
       {availableLanguages.map(lang => (
         <TouchableOpacity
-          key={lang.code}
+          key={lang.language_id}
           onPress={() => setCurrentLanguage(lang.code)}
           style={{
             backgroundColor: currentLanguage === lang.code ? '#FF6B35' : '#fff'
           }}
         >
-          <Text>{lang.nativeName}</Text>
+          <Text>{lang.name}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -101,29 +144,35 @@ const LanguageList = () => {
 ### Циклічне перемикання мов
 
 ```typescript
+const { availableLanguages, currentLanguage, setCurrentLanguage } = useLanguage();
+
 const toggleLanguage = () => {
   const currentIndex = availableLanguages.findIndex(
     lang => lang.code === currentLanguage
   );
   const nextIndex = (currentIndex + 1) % availableLanguages.length;
-  setCurrentLanguage(availableLanguages[nextIndex].code);
+  if (availableLanguages[nextIndex]) {
+    setCurrentLanguage(availableLanguages[nextIndex].code);
+  }
 };
 ```
 
-## Типи
+### Завантаження мов вручну
 
-### Language
 ```typescript
-interface Language {
-  code: LanguageCode;        // Код мови ('uk', 'en', 'ru', 'pl')
-  name: string;              // Назва мови англійською
-  nativeName: string;        // Назва мови рідною мовою
-}
-```
+import { useStore } from '@/src/state/userStore';
 
-### LanguageCode
-```typescript
-type LanguageCode = 'uk' | 'en' | 'ru' | 'pl';
+const RefreshLanguages = () => {
+  const loadLanguages = useStore(state => state.loadLanguages);
+  const isLanguagesLoaded = useStore(state => state.isLanguagesLoaded);
+
+  return (
+    <View>
+      <Text>Мови завантажені: {isLanguagesLoaded ? 'Так' : 'Ні'}</Text>
+      <Button onPress={loadLanguages} title="Оновити мови" />
+    </View>
+  );
+};
 ```
 
 ## Готові компоненти
@@ -151,3 +200,24 @@ const SettingsScreen = () => {
 ### SideMenu
 
 Дивіться `/src/components/SideMenu/index.tsx` для прикладу реалізації перемикача мов з циклічним перебором всіх доступних мов.
+
+### RootNavigation
+
+Дивіться `/src/navigation/index.tsx` для прикладу автоматичного завантаження мов при старті додатку.
+
+## API
+
+### Функції LanguageSlice
+
+- `loadLanguages()` - Завантажити мови з API
+- `setAvailableLanguages(languages)` - Встановити доступні мови вручну
+- `setCurrentLanguage(code)` - Встановити поточну мову за кодом
+- `setCurrentLanguageById(id)` - Встановити поточну мову за ID
+- `getCurrentLanguageObject()` - Отримати об'єкт поточної мови
+
+### Стан LanguageSlice
+
+- `availableLanguages: Language[]` - Всі доступні мови
+- `currentLanguage: string` - Код поточної мови
+- `currentLanguageId: number` - ID поточної мови
+- `isLanguagesLoaded: boolean` - Чи завантажені мови

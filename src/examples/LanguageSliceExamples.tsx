@@ -17,7 +17,7 @@ export const Example1_UseLanguageHook = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Приклад 1: Хук useLanguage</Text>
-      <Text>Поточна мова: {currentLanguageObject.nativeName}</Text>
+      <Text>Поточна мова: {currentLanguageObject?.name}</Text>
       <Button onPress={cycleLanguage} title="Наступна мова" />
     </View>
   );
@@ -57,7 +57,7 @@ export const Example3_LanguageList = () => {
           onPress={() => setCurrentLanguage(lang.code)}
         >
           <Text style={styles.languageCode}>{lang.code.toUpperCase()}</Text>
-          <Text style={styles.languageName}>{lang.nativeName}</Text>
+          <Text style={styles.languageName}>{lang.name}</Text>
         </TouchableOpacity>
       ))}
     </View>

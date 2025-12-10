@@ -24,6 +24,7 @@ export const SideMenu = () => {
   const currentLanguage = useStore(state => state.currentLanguage);
   const availableLanguages = useStore(state => state.availableLanguages);
   const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
+  const isLanguagesLoaded = useStore(state => state.isLanguagesLoaded);
   const theme = useTheme();
 
   const slideAnim = useRef(new Animated.Value(CONFIG.MENU_WIDTH)).current;
@@ -111,12 +112,22 @@ export const SideMenu = () => {
   };
 
   const toggleLanguage = () => {
+    // Перевірка, чи є доступні мови
+    if (availableLanguages.length === 0) {
+      console.warn('No languages available');
+      return;
+    }
+
     // Cycle through available languages
     const currentIndex = availableLanguages.findIndex(
       lang => lang.code === currentLanguage
     );
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
-    setCurrentLanguage(availableLanguages[nextIndex].code);
+    const nextLanguage = availableLanguages[nextIndex];
+
+    if (nextLanguage && nextLanguage.code) {
+      setCurrentLanguage(nextLanguage.code);
+    }
   };
 
   // Dynamic styles based on theme
@@ -199,10 +210,15 @@ export const SideMenu = () => {
         <TouchableOpacity
           style={dynamicStyles.menuItem}
           onPress={toggleLanguage}
+          disabled={!isLanguagesLoaded || availableLanguages.length === 0}
         >
           <Text style={dynamicStyles.menuItemText}>Мова</Text>
           <Text style={dynamicStyles.menuItemValue}>
-            {availableLanguages.find(lang => lang.code === currentLanguage)?.nativeName || 'UA'}
+            {!isLanguagesLoaded
+              ? 'Завантаження...'
+              : availableLanguages.length === 0
+                ? 'Немає мов'
+                : availableLanguages.find(lang => lang.code === currentLanguage)?.name || availableLanguages[0]?.name || '-'}
           </Text>
         </TouchableOpacity>
 

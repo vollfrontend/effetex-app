@@ -1,5 +1,4 @@
 import { useStore } from '@/src/state/userStore';
-import type { LanguageCode } from '@/src/state/types';
 
 /**
  * Хук для роботи з мовами
@@ -8,30 +7,38 @@ import type { LanguageCode } from '@/src/state/types';
 export const useLanguage = () => {
   const availableLanguages = useStore(state => state.availableLanguages);
   const currentLanguage = useStore(state => state.currentLanguage);
+  const currentLanguageId = useStore(state => state.currentLanguageId);
+  const isLanguagesLoaded = useStore(state => state.isLanguagesLoaded);
   const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
+  const setCurrentLanguageById = useStore(state => state.setCurrentLanguageById);
+  const loadLanguages = useStore(state => state.loadLanguages);
 
   /**
    * Отримати об'єкт поточної мови
    */
   const getCurrentLanguageObject = () => {
-    return availableLanguages.find(lang => lang.code === currentLanguage) || availableLanguages[0];
+    return availableLanguages.find(lang => lang.code === currentLanguage);
   };
 
   /**
    * Перемкнути на наступну мову в списку
    */
   const cycleLanguage = () => {
+    if (availableLanguages.length === 0) return;
+
     const currentIndex = availableLanguages.findIndex(
       lang => lang.code === currentLanguage
     );
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
-    setCurrentLanguage(availableLanguages[nextIndex].code);
+    if (availableLanguages[nextIndex]) {
+      setCurrentLanguage(availableLanguages[nextIndex].code);
+    }
   };
 
   /**
    * Перевірити, чи є мова поточною
    */
-  const isCurrentLanguage = (code: LanguageCode) => {
+  const isCurrentLanguage = (code: string) => {
     return currentLanguage === code;
   };
 
@@ -39,10 +46,14 @@ export const useLanguage = () => {
     // Дані
     availableLanguages,
     currentLanguage,
+    currentLanguageId,
     currentLanguageObject: getCurrentLanguageObject(),
+    isLanguagesLoaded,
 
     // Функції
     setCurrentLanguage,
+    setCurrentLanguageById,
+    loadLanguages,
     cycleLanguage,
     isCurrentLanguage,
   };

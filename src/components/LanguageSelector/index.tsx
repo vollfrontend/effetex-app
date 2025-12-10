@@ -48,7 +48,7 @@ export const LanguageSelector = () => {
                   { color: isSelected ? theme.white : theme.textPrimary },
                 ]}
               >
-                {lang.nativeName}
+                {lang.name}
               </Text>
             </TouchableOpacity>
           );

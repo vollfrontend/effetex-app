@@ -23,7 +23,7 @@ export const useStore = create<RootState>()(
       ...createNavigationSlice(set),
       ...createCategoriesSlice(set, get),
       ...createCartSlice(set, get),
-      ...createLanguageSlice(set),
+      ...createLanguageSlice(set, get),
       ...createSettingsSlice(set),
     })),
     { name: 'UserStore' },
