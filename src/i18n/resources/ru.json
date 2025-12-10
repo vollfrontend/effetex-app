@@ -11,5 +11,13 @@
     "sales": "Скидки",
     "notifications": "Сообщения",
     "orders": "Заказы"
+  },
+  "favorites": {
+    "title": "Избранное",
+    "empty": "Список избранного пуст",
+    "goShopping": "Перейти к покупкам"
+  },
+  "productBottomBar": {
+    "buyNow": "Купить сейчас"
   }
 }

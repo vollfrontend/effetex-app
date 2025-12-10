@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { styles } from './styles';
 import {
@@ -6,6 +6,9 @@ import {
   CartIcon,
   FavoritesIcon,
 } from '@/src/components/IconButtons';
+
+// i18n
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   isFavorite: boolean;
@@ -27,6 +30,7 @@ export const ProductBottomBar: FC<Props> = ({
   onBuy,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.productWrapper, { backgroundColor: theme.bottomBar }]}>
@@ -47,7 +51,7 @@ export const ProductBottomBar: FC<Props> = ({
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.buyButton} onPress={onBuy}>
-        <Text style={styles.buyButtonText}>Купити зараз</Text>
+        <Text style={styles.buyButtonText}>{t('productBottomBar.buyNow')}</Text>
       </TouchableOpacity>
     </View>
   );

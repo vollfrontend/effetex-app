@@ -6,6 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 // State
 import { useStore } from '@/src/state/userStore';
 
+// i18n
+import { useTranslation } from 'react-i18next';
+
 // Components
 import ItemCard from '@/src/components/ItemsSlider/ItemCard';
 import { FavoritesIcon } from '@/src/components/IconButtons';
@@ -16,6 +19,7 @@ import { useTheme } from '@/src/hooks/useTheme';
 
 export const FavoritesScreen = () => {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
   const favorites = useStore(state => state.favorites);
   const theme = useTheme();
 
@@ -30,20 +34,20 @@ export const FavoritesScreen = () => {
       >
         <View style={styles.header}>
           <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
-            Обране
+            {t('favorites.title')}
           </Text>
         </View>
         <View style={styles.emptyContainer}>
           <FavoritesIcon size={64} color="#ccc" focused={false} />
           <Text style={[styles.emptyText, { color: theme.textPrimary }]}>
-            Список бажань порожній
+            {t('favorites.empty')}
           </Text>
           <TouchableOpacity
             style={styles.goShoppingButton}
             onPress={handleGoShopping}
           >
             <Text style={[styles.goShoppingText, { color: theme.textPrimary }]}>
-              Перейти до покупок
+              {t('favorites.goShopping')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -57,7 +61,7 @@ export const FavoritesScreen = () => {
     >
       <View style={[styles.header, { backgroundColor: theme.cardBackground }]}>
         <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
-          Обране
+          {t('favorites.title')}
         </Text>
       </View>
 

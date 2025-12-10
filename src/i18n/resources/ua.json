@@ -11,5 +11,13 @@
     "sales": "Знижки",
     "notifications": "Сповіщення",
     "orders": "Замовлення"
+  },
+  "favorites": {
+    "title": "Обране",
+    "empty": "Список бажань порожній",
+    "goShopping": "Перейти до покупок"
+  },
+  "productBottomBar": {
+    "buyNow": "Купити зараз"
   }
 }
