@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     height: height,
     backgroundColor: COLORS.cardBackground,
     padding: 20,
-    paddingTop: 60, // Adjust for status bar
     shadowColor: '#000',
     shadowOffset: {
       width: -2,
@@ -66,16 +65,16 @@ export const styles = StyleSheet.create({
     color: COLORS.textPrimary,
   },
   menuItemValue: {
-      fontSize: 16,
-      color: COLORS.primary,
-      fontWeight: '600',
+    fontSize: 16,
+    color: COLORS.primary,
+    fontWeight: '600',
   },
   row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      width: '100%',
-  }
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
 });
 
 export const CONFIG = {

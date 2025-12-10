@@ -16,6 +16,7 @@ import { nav } from '@/src/navigation/navigationRef';
 
 // i18n
 import { AvailableLang, changeLanguage } from '@/src/i18n';
+import { useTranslation } from 'react-i18next';
 
 export const SideMenu = () => {
   const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
@@ -29,6 +30,7 @@ export const SideMenu = () => {
   const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
   const isLanguagesLoaded = useStore(state => state.isLanguagesLoaded);
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const slideAnim = useRef(new Animated.Value(CONFIG.MENU_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -192,7 +194,7 @@ export const SideMenu = () => {
         ]}
         {...panResponder.panHandlers}
       >
-        <Text style={dynamicStyles.title}>Menu</Text>
+        <Text style={dynamicStyles.title}>{t('sideMenu.menu')}</Text>
 
         <TouchableOpacity
           style={dynamicStyles.signInButton}
@@ -201,12 +203,14 @@ export const SideMenu = () => {
             nav('Auth');
           }}
         >
-          <Text style={dynamicStyles.signInText}>Увійти</Text>
+          <Text style={dynamicStyles.signInText}>{t('sideMenu.signIn')}</Text>
         </TouchableOpacity>
 
         {/* Theme Toggle */}
         <View style={dynamicStyles.menuItem}>
-          <Text style={dynamicStyles.menuItemText}>Темна тема</Text>
+          <Text style={dynamicStyles.menuItemText}>
+            {t('sideMenu.darkTheme')}
+          </Text>
           <Switch
             value={themeMode === 'dark'}
             onValueChange={toggleTheme}
@@ -221,12 +225,14 @@ export const SideMenu = () => {
           onPress={toggleLanguage}
           disabled={!isLanguagesLoaded || availableLanguages.length === 0}
         >
-          <Text style={dynamicStyles.menuItemText}>Мова</Text>
+          <Text style={dynamicStyles.menuItemText}>
+            {t('sideMenu.language')}
+          </Text>
           <Text style={dynamicStyles.menuItemValue}>
             {!isLanguagesLoaded
-              ? 'Завантаження...'
+              ? t('sideMenu.loading')
               : availableLanguages.length === 0
-              ? 'Немає мов'
+              ? t('sideMenu.noLanguages')
               : availableLanguages.find(lang => lang.code === currentLanguage)
                   ?.name ||
                 availableLanguages[0]?.name ||
@@ -236,11 +242,13 @@ export const SideMenu = () => {
 
         {/* Example items */}
         <TouchableOpacity style={dynamicStyles.menuItem} onPress={handleClose}>
-          <Text style={dynamicStyles.menuItemText}>Налаштування</Text>
+          <Text style={dynamicStyles.menuItemText}>
+            {t('sideMenu.settings')}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={dynamicStyles.menuItem} onPress={handleClose}>
-          <Text style={dynamicStyles.menuItemText}>Допомога</Text>
+          <Text style={dynamicStyles.menuItemText}>{t('sideMenu.help')}</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>

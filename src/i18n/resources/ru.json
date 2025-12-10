@@ -19,5 +19,15 @@
   },
   "productBottomBar": {
     "buyNow": "Купить сейчас"
+  },
+  "sideMenu": {
+    "menu": "Меню",
+    "signIn": "Войти",
+    "darkTheme": "Темная тема",
+    "language": "Язык",
+    "loading": "Загрузка...",
+    "noLanguages": "Нет языков",
+    "settings": "Настройки",
+    "help": "Помощь"
   }
 }
