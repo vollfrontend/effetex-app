@@ -1,12 +1,6 @@
 // src/screens/CartScreen/index.tsx
 import React, { useMemo } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
@@ -16,6 +10,7 @@ import { CartItem } from '@/src/state/types';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Icons
 import { CartIcon } from '@/src/components/IconButtons';
@@ -25,6 +20,7 @@ export const CartScreen = () => {
   const cart = useStore(state => state.cart);
   const removeFromCart = useStore(state => state.removeFromCart);
   const changeQuantity = useStore(state => state.changeQuantity);
+  const theme = useTheme();
 
   const totalPrice = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -36,7 +32,9 @@ export const CartScreen = () => {
 
   const renderItem = ({ item }: { item: CartItem }) => {
     return (
-      <View style={styles.cartItem}>
+      <View
+        style={[styles.cartItem, { backgroundColor: theme.cardBackground }]}
+      >
         <Image
           source={
             item.image && item.image !== 'https://effetex-shop.voll.top/image/'
@@ -48,28 +46,61 @@ export const CartScreen = () => {
 
         <View style={styles.itemInfo}>
           <View>
-             <Text style={styles.itemTitle} numberOfLines={2}>
+            <Text
+              style={[styles.itemTitle, { color: theme.textPrimary }]}
+              numberOfLines={2}
+            >
               {item.title}
             </Text>
-            <Text style={styles.price}>{item.price} ₴</Text>
+            <Text style={[styles.price, { color: theme.textPrimary }]}>
+              {item.price} ₴
+            </Text>
           </View>
 
           <View style={styles.controlsRow}>
             <View style={styles.counterContainer}>
               <TouchableOpacity
-                style={styles.counterButton}
+                style={[
+                  styles.counterButton,
+                  { backgroundColor: theme.cardBackground },
+                ]}
                 onPress={() => changeQuantity(item.id, -1)}
               >
-                <Text style={styles.counterButtonText}>-</Text>
+                <Text
+                  style={[
+                    styles.counterButtonText,
+                    {
+                      color: theme.textPrimary,
+                      backgroundColor: theme.cardBackground,
+                    },
+                  ]}
+                >
+                  -
+                </Text>
               </TouchableOpacity>
 
-              <Text style={styles.quantity}>{item.quantity}</Text>
+              <Text style={[styles.quantity, { color: theme.textPrimary }]}>
+                {item.quantity}
+              </Text>
 
               <TouchableOpacity
-                style={styles.counterButton}
+                style={[
+                  styles.counterButton,
+                  { backgroundColor: theme.cardBackground },
+                ]}
                 onPress={() => changeQuantity(item.id, 1)}
               >
-                <Text style={styles.counterButtonText}>+</Text>
+                <Text
+                  style={[
+                    styles.counterButtonText,
+                    {
+                      color: theme.textPrimary,
+                      backgroundColor: theme.cardBackground,
+                    },
+                  ]}
+                >
+                  +
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -77,7 +108,9 @@ export const CartScreen = () => {
               onPress={() => removeFromCart(item.id)}
               style={styles.deleteButton}
             >
-               <Text style={styles.deleteText}>×</Text>
+              <Text style={[styles.deleteText, { color: theme.textPrimary }]}>
+                ×
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -86,21 +119,29 @@ export const CartScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Кошик</Text>
+      <View style={[styles.header, { backgroundColor: theme.cardBackground }]}>
+        <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
+          Кошик
+        </Text>
       </View>
 
       {cart.length === 0 ? (
         <View style={styles.emptyContainer}>
           <CartIcon size={64} color="#ccc" focused={false} />
-          <Text style={styles.emptyText}>Кошик порожній</Text>
+          <Text style={[styles.emptyText, { color: theme.textPrimary }]}>
+            Кошик порожній
+          </Text>
           <TouchableOpacity
             style={styles.goShoppingButton}
             onPress={handleGoShopping}
           >
-             <Text style={styles.goShoppingText}>Перейти до покупок</Text>
+            <Text style={[styles.goShoppingText, { color: theme.textPrimary }]}>
+              Перейти до покупок
+            </Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -113,13 +154,26 @@ export const CartScreen = () => {
             showsVerticalScrollIndicator={false}
           />
 
-          <View style={styles.footer}>
+          <View
+            style={[styles.footer, { backgroundColor: theme.cardBackground }]}
+          >
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Разом:</Text>
-              <Text style={styles.totalPrice}>{totalPrice} ₴</Text>
+              <Text style={[styles.totalLabel, { color: theme.textPrimary }]}>
+                Разом:
+              </Text>
+              <Text style={[styles.totalPrice, { color: theme.textPrimary }]}>
+                {totalPrice} ₴
+              </Text>
             </View>
             <TouchableOpacity style={styles.checkoutButton}>
-              <Text style={styles.checkoutButtonText}>Оформити замовлення</Text>
+              <Text
+                style={[
+                  styles.checkoutButtonText,
+                  { color: theme.textPrimary },
+                ]}
+              >
+                Оформити замовлення
+              </Text>
             </TouchableOpacity>
           </View>
         </>

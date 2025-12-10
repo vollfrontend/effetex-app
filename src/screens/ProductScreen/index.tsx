@@ -177,8 +177,6 @@ export const ProductScreen: FC<Props> = ({ route }) => {
     ...(Array.isArray(product.images) ? product.images : []),
   ];
 
-  console.log('product-description', product.description);
-
   return (
     <View
       style={[styles.containerWrapper, { backgroundColor: theme.background }]}

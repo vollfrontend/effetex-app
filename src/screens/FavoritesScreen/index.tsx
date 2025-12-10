@@ -12,13 +12,12 @@ import { FavoritesIcon } from '@/src/components/IconButtons';
 
 // Styles
 import { styles } from './styles';
-
-// Types
-import { RootStackNavigationProp } from '@/src/navigation/types';
+import { useTheme } from '@/src/hooks/useTheme';
 
 export const FavoritesScreen = () => {
   const navigation = useNavigation<any>();
   const favorites = useStore(state => state.favorites);
+  const theme = useTheme();
 
   const handleGoShopping = () => {
     navigation.navigate('Home');
@@ -26,18 +25,26 @@ export const FavoritesScreen = () => {
 
   if (favorites.length === 0) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.background }]}
+      >
         <View style={styles.header}>
-           <Text style={styles.headerTitle}>Обране</Text>
+          <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
+            Обране
+          </Text>
         </View>
         <View style={styles.emptyContainer}>
           <FavoritesIcon size={64} color="#ccc" focused={false} />
-          <Text style={styles.emptyText}>Список бажань порожній</Text>
+          <Text style={[styles.emptyText, { color: theme.textPrimary }]}>
+            Список бажань порожній
+          </Text>
           <TouchableOpacity
             style={styles.goShoppingButton}
             onPress={handleGoShopping}
           >
-            <Text style={styles.goShoppingText}>Перейти до покупок</Text>
+            <Text style={[styles.goShoppingText, { color: theme.textPrimary }]}>
+              Перейти до покупок
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -45,9 +52,13 @@ export const FavoritesScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-         <Text style={styles.headerTitle}>Обране</Text>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
+      <View style={[styles.header, { backgroundColor: theme.cardBackground }]}>
+        <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
+          Обране
+        </Text>
       </View>
 
       <FlatList
