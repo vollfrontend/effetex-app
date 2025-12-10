@@ -57,11 +57,25 @@ export const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   menuItemText: {
     fontSize: 16,
     color: COLORS.textPrimary,
   },
+  menuItemValue: {
+      fontSize: 16,
+      color: COLORS.primary,
+      fontWeight: '600',
+  },
+  row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+  }
 });
 
 export const CONFIG = {

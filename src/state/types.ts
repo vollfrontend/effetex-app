@@ -39,9 +39,18 @@ export interface CartSlice {
   clearCart: () => void;
 }
 
+// ---------- SETTINGS ----------
+export interface SettingsSlice {
+  theme: 'light' | 'dark';
+  language: 'uk' | 'en';
+  setTheme: (theme: 'light' | 'dark') => void;
+  setLanguage: (language: 'uk' | 'en') => void;
+}
+
 // ---------- ROOT ----------
 export interface RootState
   extends FavoritesSlice,
     CategoriesSlice,
     NavigationSlice,
-    CartSlice {}
+    CartSlice,
+    SettingsSlice {}

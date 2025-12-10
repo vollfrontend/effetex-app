@@ -6,15 +6,23 @@ import {
   Animated,
   TouchableWithoutFeedback,
   Dimensions,
+  Switch,
 } from 'react-native';
 import { useStore } from '@/src/state/userStore';
 import { styles, CONFIG } from './styles';
+import { COLORS } from '@/src/constants/colors';
 
 const { width } = Dimensions.get('window');
 
 export const SideMenu = () => {
   const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
   const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
+
+  // Settings
+  const theme = useStore(state => state.theme);
+  const setTheme = useStore(state => state.setTheme);
+  const language = useStore(state => state.language);
+  const setLanguage = useStore(state => state.setLanguage);
 
   const slideAnim = useRef(new Animated.Value(CONFIG.MENU_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -55,6 +63,14 @@ export const SideMenu = () => {
     setSideMenuOpen(false);
   };
 
+  const toggleTheme = () => {
+      setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const toggleLanguage = () => {
+      setLanguage(language === 'uk' ? 'en' : 'uk');
+  };
+
   // We need to render it always to allow animation to finish,
   // but we can disable pointer events when closed.
   const pointerEvents = isSideMenuOpen ? 'auto' : 'none';
@@ -83,6 +99,23 @@ export const SideMenu = () => {
             handleClose();
         }}>
           <Text style={styles.signInText}>Увійти</Text>
+        </TouchableOpacity>
+
+        {/* Theme Toggle */}
+        <View style={styles.menuItem}>
+          <Text style={styles.menuItemText}>Темна тема</Text>
+          <Switch
+            value={theme === 'dark'}
+            onValueChange={toggleTheme}
+            trackColor={{ false: '#767577', true: COLORS.primary }}
+            thumbColor={COLORS.white}
+          />
+        </View>
+
+        {/* Language Selector */}
+        <TouchableOpacity style={styles.menuItem} onPress={toggleLanguage}>
+          <Text style={styles.menuItemText}>Мова</Text>
+          <Text style={styles.menuItemValue}>{language === 'uk' ? 'UA' : 'EN'}</Text>
         </TouchableOpacity>
 
         {/* Example items */}
