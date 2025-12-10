@@ -14,6 +14,9 @@ import { styles, CONFIG } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 import { nav } from '@/src/navigation/navigationRef';
 
+// i18n
+import { AvailableLang, changeLanguage } from '@/src/i18n';
+
 export const SideMenu = () => {
   const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
   const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
@@ -111,23 +114,29 @@ export const SideMenu = () => {
     setTheme(themeMode === 'light' ? 'dark' : 'light');
   };
 
-  const toggleLanguage = () => {
-    // Перевірка, чи є доступні мови
+  const toggleLanguage = async () => {
     if (availableLanguages.length === 0) {
       console.warn('No languages available');
       return;
     }
 
-    // Cycle through available languages
+    // Find next language in list
     const currentIndex = availableLanguages.findIndex(
-      lang => lang.code === currentLanguage
+      lang => lang.code === currentLanguage,
     );
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
     const nextLanguage = availableLanguages[nextIndex];
 
-    if (nextLanguage && nextLanguage.code) {
-      setCurrentLanguage(nextLanguage.code);
-    }
+    if (!nextLanguage || !nextLanguage.code) return;
+
+    // 1️⃣ Update Zustand
+    setCurrentLanguage(nextLanguage.code);
+
+    // 2️⃣ Update i18next
+    await changeLanguage(nextLanguage.code as AvailableLang);
+
+    // 3️⃣ Optional: close the menu
+    // setSideMenuOpen(false);
   };
 
   // Dynamic styles based on theme
@@ -217,8 +226,11 @@ export const SideMenu = () => {
             {!isLanguagesLoaded
               ? 'Завантаження...'
               : availableLanguages.length === 0
-                ? 'Немає мов'
-                : availableLanguages.find(lang => lang.code === currentLanguage)?.name || availableLanguages[0]?.name || '-'}
+              ? 'Немає мов'
+              : availableLanguages.find(lang => lang.code === currentLanguage)
+                  ?.name ||
+                availableLanguages[0]?.name ||
+                '-'}
           </Text>
         </TouchableOpacity>
 
