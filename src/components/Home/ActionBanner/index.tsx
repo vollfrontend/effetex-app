@@ -9,8 +9,8 @@ const screenWidth: number = Dimensions.get('window').width;
 const ActionBanner: FC = () => {
   return (
     <View style={styles.wrapper}>
-      <View style={[styles.container, { width: screenWidth }]}>
-        <Svg width={screenWidth} height={44} style={styles.gradient}>
+      <View style={[styles.container, { width: screenWidth - 2 }]}>
+        <Svg width={screenWidth} height={45} style={styles.gradient}>
           <Defs>
             <LinearGradient id="bannerGradient" x1="0" y1="0" x2="0" y2="1">
               <Stop offset="0" stopColor="#00204A" stopOpacity={1} />
@@ -18,7 +18,14 @@ const ActionBanner: FC = () => {
             </LinearGradient>
           </Defs>
 
-          <Rect x={0} y={0} width={screenWidth} height={44} rx={0} fill="url(#bannerGradient)" />
+          <Rect
+            x={0}
+            y={0}
+            width={screenWidth}
+            height={45}
+            rx={0}
+            fill="url(#bannerGradient)"
+          />
         </Svg>
 
         <Text style={styles.text}>

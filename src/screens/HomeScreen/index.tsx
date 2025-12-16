@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { ScrollView, Platform, View, StyleSheet, Text, Alert } from 'react-native';
+import { ScrollView, Platform, View, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -151,11 +151,13 @@ const HomeScreen: FC = () => {
           ios: <HeaderIOS />,
         })}
 
-        <Text>{t('common.hello')}</Text>
-
         <ActionBanner />
 
-        <PromoSlider data={slidesData} onSlidePress={handleSlidePress} />
+        <PromoSlider
+          data={slidesData}
+          onSlidePress={handleSlidePress}
+          backgroundColor={theme.background}
+        />
         <View style={dynamicStyles.content}>
           <View style={dynamicStyles.promoContainer}>
             <PromoBlock

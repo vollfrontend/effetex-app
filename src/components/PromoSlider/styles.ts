@@ -6,15 +6,24 @@ const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
   wrapper: {
     width,
-    height: 190,
-    backgroundColor: '#0F1737',
+    height: 350,
+    boxSizing: 'border-box',
     marginBottom: 10,
+    paddingBottom: 20,
+  },
+
+  sliderContainer: {
+    width: '100%',
+    height: '100%',
+    overflow: 'visible',
+    position: 'relative',
   },
 
   slide: {
-    width,
-    height: 190,
+    width: width,
+    height: 330,
     position: 'relative',
+    overflow: 'hidden',
   },
 
   slideImage: {
@@ -27,18 +36,18 @@ export const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingVertical: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingVertical: 40,
     paddingHorizontal: 20,
   },
 
   slideTitle: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
 
   contentContainer: {
@@ -109,22 +118,29 @@ export const styles = StyleSheet.create({
 
   pagination: {
     position: 'absolute',
-    bottom: 10,
-    width: '100%',
+    bottom: 0,
+    left: 16,
+    right: 16,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
   },
 
   dot: {
     width: 8,
     height: 8,
-    backgroundColor: '#445',
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: 'orange',
     borderRadius: 50,
     marginHorizontal: 4,
   },
 
   activeDot: {
-    backgroundColor: '#0f0',
+    backgroundColor: 'orange',
+    width: 10,
+    height: 10,
   },
 
   imagesContainer: {
@@ -133,5 +149,39 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+
+  // Кнопки навігації
+  navButton: {
+    borderStyle: 'solid',
+    position: 'absolute',
+    borderRadius: 60,
+    top: '50%',
+    borderWidth: 2,
+    transform: [{ translateY: -30 }],
+    zIndex: 10,
+  },
+
+  navButtonLeft: {
+    left: 8,
+  },
+
+  navButtonRight: {
+    right: 8,
+  },
+
+  arrow: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 60,
+  },
+
+  arrowText: {
+    fontSize: 30,
+    fontWeight: '700',
+    lineHeight: 34,
   },
 });

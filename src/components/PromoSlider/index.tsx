@@ -15,11 +15,13 @@ import {
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import { SlideItem, PromoSliderProps } from './types';
 
 const { width } = Dimensions.get('window');
+const SLIDE_WIDTH = width - 32; // Ширина слайду з урахуванням відступів
 
 const AUTOPLAY_INTERVAL = 3000; // 3 секунди
 
@@ -44,13 +46,13 @@ const localImages: { [key: string]: ImageSourcePropType } = {
 const PromoSlider: FC<PromoSliderProps> = ({ data, onSlidePress }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isUserScrolling, setIsUserScrolling] = useState<boolean>(false);
-
+  const theme = useTheme();
   const flatListRef = useRef<FlatListType<SlideItem>>(null);
   const autoplayRef = useRef<number | null>(null);
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>): void => {
     const xOffset = e.nativeEvent.contentOffset.x;
-    const index = Math.round(xOffset / width);
+    const index = Math.round(xOffset / SLIDE_WIDTH);
     setActiveIndex(index);
   };
 
@@ -93,6 +95,24 @@ const PromoSlider: FC<PromoSliderProps> = ({ data, onSlidePress }) => {
     }
   };
 
+  const goToPrevious = (): void => {
+    const prevIndex = activeIndex - 1 < 0 ? data.length - 1 : activeIndex - 1;
+    flatListRef.current?.scrollToIndex({
+      index: prevIndex,
+      animated: true,
+    });
+    setActiveIndex(prevIndex);
+  };
+
+  const goToNext = (): void => {
+    const nextIndex = activeIndex + 1 >= data.length ? 0 : activeIndex + 1;
+    flatListRef.current?.scrollToIndex({
+      index: nextIndex,
+      animated: true,
+    });
+    setActiveIndex(nextIndex);
+  };
+
   const getImageSource = (
     image: string | string[],
   ): ImageSourcePropType | { uri: string } => {
@@ -109,69 +129,100 @@ const PromoSlider: FC<PromoSliderProps> = ({ data, onSlidePress }) => {
 
   return (
     <View style={styles.wrapper}>
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        keyExtractor={(item: SlideItem) => item.id}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={onScroll}
-        onScrollBeginDrag={onScrollBeginDrag}
-        onScrollEndDrag={onScrollEndDrag}
-        renderItem={({ item }: { item: SlideItem }) => (
-          <TouchableOpacity
-            style={styles.slide}
-            activeOpacity={0.9}
-            onPress={() => handleSlidePress(item)}
-          >
-            {item.content && (
-              <View style={styles.contentContainer}>
-                <Text style={styles.title}>{item.content.title}</Text>
-                <Text style={styles.subtitle}>{item.content.subtitle}</Text>
-                <Text style={styles.price}>{item.content.price}</Text>
-                <Text style={styles.credit}>{item.content.credit}</Text>
-              </View>
-            )}
+      <View style={styles.sliderContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={data}
+          keyExtractor={(item: SlideItem) => item.id}
+          horizontal
+          pagingEnabled={false}
+          snapToInterval={SLIDE_WIDTH}
+          decelerationRate="fast"
+          showsHorizontalScrollIndicator={false}
+          onScroll={onScroll}
+          onScrollBeginDrag={onScrollBeginDrag}
+          onScrollEndDrag={onScrollEndDrag}
+          renderItem={({ item }: { item: SlideItem }) => (
+            <TouchableOpacity
+              style={styles.slide}
+              activeOpacity={0.9}
+              onPress={() => handleSlidePress(item)}
+            >
+              {item.content && (
+                <View style={styles.contentContainer}>
+                  <Text style={styles.title}>{item.content.title}</Text>
+                  <Text style={styles.subtitle}>{item.content.subtitle}</Text>
+                  <Text style={styles.price}>{item.content.price}</Text>
+                  <Text style={styles.credit}>{item.content.credit}</Text>
+                </View>
+              )}
 
-            {Array.isArray(item.image) ? (
-              <View style={styles.imagesContainer}>
-                {item.image.map((image: string, idx: number) => (
+              {Array.isArray(item.image) ? (
+                <View style={styles.imagesContainer}>
+                  {item.image.map((image: string, idx: number) => (
+                    <Image
+                      key={idx}
+                      source={getImageSource(image)}
+                      style={styles.phoneImage}
+                      resizeMode="contain"
+                    />
+                  ))}
+                </View>
+              ) : (
+                <>
                   <Image
-                    key={idx}
-                    source={getImageSource(image)}
-                    style={styles.phoneImage}
-                    resizeMode="contain"
+                    source={getImageSource(item.image)}
+                    style={styles.slideImage}
+                    resizeMode="cover"
                   />
-                ))}
-              </View>
-            ) : (
-              <>
-                <Image
-                  source={getImageSource(item.image)}
-                  style={styles.slideImage}
-                  resizeMode="cover"
-                />
-                {item.title && (
-                  <View style={styles.titleOverlay}>
-                    <Text style={styles.slideTitle}>{item.title}</Text>
-                  </View>
-                )}
-              </>
-            )}
-          </TouchableOpacity>
-        )}
-      />
+                  {item.title && (
+                    <View style={styles.titleOverlay}>
+                      <Text style={styles.slideTitle}>{item.title}</Text>
+                    </View>
+                  )}
+                </>
+              )}
+            </TouchableOpacity>
+          )}
+        />
+
+        {/* Кнопки навігації */}
+        <TouchableOpacity
+          style={[
+            styles.navButtonLeft,
+            styles.navButton,
+            { borderColor: theme.primary },
+          ]}
+          onPress={goToPrevious}
+        >
+          <View style={[styles.arrow]}>
+            <Text style={[styles.arrowText, { color: theme.primary }]}>‹</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.navButtonRight,
+            styles.navButton,
+            { borderColor: theme.primary },
+          ]}
+          onPress={goToNext}
+        >
+          <View style={[styles.arrow]}>
+            <Text style={[styles.arrowText, { color: theme.primary }]}>›</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {/* Pagination */}
-      <View style={styles.pagination}>
+      {/* <View style={styles.pagination}>
         {data.map((_, i: number) => (
           <View
             key={i}
             style={[styles.dot, activeIndex === i && styles.activeDot]}
           />
         ))}
-      </View>
+      </View> */}
     </View>
   );
 };

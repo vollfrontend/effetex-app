@@ -16,4 +16,5 @@ export interface SlideItem {
 export interface PromoSliderProps {
   data: SlideItem[];
   onSlidePress?: (link: string) => void;
+  backgroundColor?: string;
 }

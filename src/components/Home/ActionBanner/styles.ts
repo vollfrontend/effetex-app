@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   wrapper: {
     width: screenWidth,
     alignItems: 'center',
-    height: 60,
+    height: 45,
   },
 
   // сам банер – завжди на ширину екрану (ширину задаємо в компоненті)
@@ -16,7 +16,6 @@ export const styles = StyleSheet.create({
     width: screenWidth,
     borderRadius: 0,
     paddingVertical: 12,
-    paddingHorizontal: 16,
     overflow: 'hidden',
     backgroundColor: 'transparent',
     position: 'relative',
