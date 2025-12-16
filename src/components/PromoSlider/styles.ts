@@ -13,9 +13,32 @@ export const styles = StyleSheet.create({
 
   slide: {
     width,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    height: 190,
+    position: 'relative',
+  },
+
+  slideImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  titleOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+
+  slideTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
 
   contentContainer: {

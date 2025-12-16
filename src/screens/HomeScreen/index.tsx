@@ -1,8 +1,11 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { ScrollView, Platform, View, StyleSheet, Text } from 'react-native';
+import { ScrollView, Platform, View, StyleSheet, Text, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+
+// Data
+import slidesData from '@/src/data/slides.json';
 
 // API
 import { getCategories, getLanguages } from '@/src/api/shopApi';
@@ -42,26 +45,13 @@ const HomeScreen: FC = () => {
 
   const [query, setQuery] = useState<string>('');
 
-  const slides = [
-    {
-      id: '1',
-      image:
-        'https://content1.rozetka.com.ua/banner_main/images_mobile_ua/original/624786376.jpg',
-      content: null,
-    },
-    {
-      id: '2',
-      image:
-        'https://content1.rozetka.com.ua/banner_main/images_mobile_ua/original/626442356.png',
-      content: null,
-    },
-    {
-      id: '3',
-      image:
-        'https://content2.rozetka.com.ua/banner_main/images_mobile_ua/original/626736558.png',
-      content: null,
-    },
-  ];
+  const handleSlidePress = (link: string): void => {
+    // Тут можна додати навігацію до відповідної категорії або екрану
+    console.log('Slide pressed:', link);
+    Alert.alert('Перехід', `Відкриття розділу: ${link}`);
+    // Приклад навігації:
+    // navigation.navigate('Category', { categoryId: link });
+  };
 
   const menuItems = [
     {
@@ -165,7 +155,7 @@ const HomeScreen: FC = () => {
 
         <ActionBanner />
 
-        <PromoSlider data={slides} />
+        <PromoSlider data={slidesData} onSlidePress={handleSlidePress} />
         <View style={dynamicStyles.content}>
           <View style={dynamicStyles.promoContainer}>
             <PromoBlock

@@ -7,10 +7,13 @@ export type contentType = {
 
 export interface SlideItem {
   id: string;
+  title?: string;
   content?: contentType | null;
   image: string | string[];
+  link?: string;
 }
 
 export interface PromoSliderProps {
   data: SlideItem[];
+  onSlidePress?: (link: string) => void;
 }
