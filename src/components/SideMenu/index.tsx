@@ -22,6 +22,11 @@ export const SideMenu = () => {
   const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
   const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
 
+  // Auth
+  const user = useStore(state => state.user);
+  const isAuthenticated = useStore(state => state.isAuthenticated);
+  const logout = useStore(state => state.logout);
+
   // Settings
   const themeMode = useStore(state => state.theme);
   const setTheme = useStore(state => state.setTheme);
@@ -141,6 +146,12 @@ export const SideMenu = () => {
     // setSideMenuOpen(false);
   };
 
+  const handleLogout = () => {
+    logout();
+    handleClose();
+    nav('Home');
+  };
+
   // Dynamic styles based on theme
   const dynamicStyles = StyleSheet.create({
     menu: {
@@ -158,6 +169,34 @@ export const SideMenu = () => {
     signInText: {
       ...styles.signInText,
       color: theme.white,
+    },
+    userBlock: {
+      backgroundColor: theme.background,
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 20,
+    },
+    userName: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: theme.textPrimary,
+      marginBottom: 8,
+    },
+    userEmail: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      marginBottom: 12,
+    },
+    logoutButton: {
+      backgroundColor: theme.error || '#FF3B30',
+      paddingVertical: 8,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    logoutText: {
+      color: theme.white,
+      fontSize: 14,
+      fontWeight: '600',
     },
     menuItem: {
       ...styles.menuItem,
@@ -196,15 +235,34 @@ export const SideMenu = () => {
       >
         <Text style={dynamicStyles.title}>{t('sideMenu.menu')}</Text>
 
-        <TouchableOpacity
-          style={dynamicStyles.signInButton}
-          onPress={() => {
-            handleClose();
-            nav('Auth');
-          }}
-        >
-          <Text style={dynamicStyles.signInText}>{t('sideMenu.signIn')}</Text>
-        </TouchableOpacity>
+        {isAuthenticated && user ? (
+          // Блок залогіненого користувача
+          <View style={dynamicStyles.userBlock}>
+            <Text style={dynamicStyles.userName}>
+              {user.firstname} {user.lastname}
+            </Text>
+            <Text style={dynamicStyles.userEmail}>{user.email}</Text>
+            <TouchableOpacity
+              style={dynamicStyles.logoutButton}
+              onPress={handleLogout}
+            >
+              <Text style={dynamicStyles.logoutText}>
+                {t('sideMenu.logout')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // Кнопка входу для незалогінених
+          <TouchableOpacity
+            style={dynamicStyles.signInButton}
+            onPress={() => {
+              handleClose();
+              nav('Auth');
+            }}
+          >
+            <Text style={dynamicStyles.signInText}>{t('sideMenu.signIn')}</Text>
+          </TouchableOpacity>
+        )}
 
         {/* Theme Toggle */}
         <View style={dynamicStyles.menuItem}>

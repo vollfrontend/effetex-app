@@ -16,6 +16,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 import { registerCustomer, loginCustomer } from '@/src/api/shopApi';
+import { useStore } from '@/src/state/userStore';
+import { nav } from '@/src/navigation/navigationRef';
 
 // i18n
 import { useTranslation } from 'react-i18next';
@@ -26,6 +28,7 @@ type AuthMode = 'login' | 'register';
 export const AuthScreen = () => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const setUser = useStore(state => state.setUser);
   const [mode, setMode] = useState<AuthMode>('login');
   const [loading, setLoading] = useState(false);
 
@@ -86,9 +89,22 @@ export const AuthScreen = () => {
 
         console.log('Login response:', JSON.stringify(response, null, 2));
 
-        if (response.success) {
+        if (response.success && response.customer) {
+          // Зберегти дані користувача у стор
+          const customer = response.customer;
+          setUser({
+            customer_id: Number(customer.customer_id),
+            firstname: customer.firstname || email.split('@')[0],
+            lastname: customer.lastname || '',
+            email: customer.email || email,
+            telephone: customer.telephone,
+            token: response.token,
+          });
+
           Alert.alert(t('auth.success'), t('auth.loginSuccess'));
-          // TODO: Зберегти токен/customer_id у стор
+
+          // Перенаправити на головний екран
+          nav('Home');
         } else {
           const errorMsg =
             typeof response.error === 'string'
@@ -112,8 +128,25 @@ export const AuthScreen = () => {
 
         if (response.success) {
           Alert.alert(t('auth.success'), t('auth.registerSuccess'));
-          // Можна автоматично перейти на логін або залогінити
-          setMode('login');
+
+          // Автоматично залогінити користувача після реєстрації
+          if (response.customer) {
+            const customer = response.customer;
+            setUser({
+              customer_id: Number(customer.customer_id),
+              firstname: customer.firstname || firstname,
+              lastname: customer.lastname || lastname,
+              email: customer.email || email,
+              telephone: customer.telephone || telephone,
+              token: response.token,
+            });
+
+            // Перенаправити на головний екран
+            nav('Home');
+          } else {
+            // Якщо API не повертає customer, перемикаємо на логін
+            setMode('login');
+          }
         } else {
           const errorMsg =
             typeof response.error === 'string'

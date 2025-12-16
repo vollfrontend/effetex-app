@@ -25,6 +25,7 @@
   "sideMenu": {
     "menu": "Меню",
     "signIn": "Войти",
+    "logout": "Выйти",
     "darkTheme": "Темная тема",
     "language": "Язык",
     "loading": "Загрузка...",

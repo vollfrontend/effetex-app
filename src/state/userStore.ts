@@ -9,7 +9,7 @@ import { createFavoritesSlice } from '@/src/state/slices/favoritesSlice';
 import { createNavigationSlice } from '@/src/state/slices/navigation';
 import { createCategoriesSlice } from '@/src/state/slices/categoriesSlice';
 import { createCartSlice } from '@/src/state/slices/cartSlice';
-
+import { createAuthSlice } from '@/src/state/slices/authSlice';
 import { createSettingsSlice } from '@/src/state/slices/settingsSlice';
 import { createLanguageSlice } from '@/src/state/slices/languageSlice';
 
@@ -24,6 +24,7 @@ export const useStore = create<RootState>()(
       ...createCategoriesSlice(set, get),
       ...createCartSlice(set, get),
       ...createLanguageSlice(set, get),
+      ...createAuthSlice(set, get),
       ...createSettingsSlice(set),
     })),
     { name: 'UserStore' },

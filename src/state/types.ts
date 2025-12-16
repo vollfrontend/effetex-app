@@ -65,6 +65,24 @@ export interface SettingsSlice {
   setLanguage: (language: 'uk' | 'en') => void;
 }
 
+// ---------- AUTH ----------
+export interface User {
+  customer_id: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  telephone?: string;
+  token?: string;
+}
+
+export interface AuthSlice {
+  user: User | null;
+  isAuthenticated: boolean;
+  setUser: (user: User | null) => void;
+  logout: () => void;
+  updateUser: (updates: Partial<User>) => void;
+}
+
 // ---------- ROOT ----------
 export interface RootState
   extends FavoritesSlice,
@@ -72,4 +90,5 @@ export interface RootState
     NavigationSlice,
     CartSlice,
     LanguageSlice,
-    SettingsSlice {}
+    SettingsSlice,
+    AuthSlice {}

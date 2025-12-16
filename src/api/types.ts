@@ -166,11 +166,22 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface CustomerData {
+  customer_id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  telephone?: string;
+  customer_group_id?: string;
+  date_added?: string;
+}
+
 export interface RegisterResponse {
   success?: boolean;
   error?: string | Record<string, any>;
   message?: string | Record<string, any>;
-  customer_id?: number;
+  token?: string;
+  customer?: CustomerData;
   [key: string]: any; // Для інших можливих полів від API
 }
 
@@ -184,7 +195,7 @@ export interface LoginResponse {
   success?: boolean;
   error?: string | Record<string, any>;
   message?: string | Record<string, any>;
-  customer_id?: number;
   token?: string;
+  customer?: CustomerData;
   [key: string]: any; // Для інших можливих полів від API
 }
