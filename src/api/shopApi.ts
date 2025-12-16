@@ -3,7 +3,16 @@
 import Config from 'react-native-config';
 
 // Types
-import { Language, Category, ProductItem, ProductFull } from './types';
+import {
+  Language,
+  Category,
+  ProductItem,
+  ProductFull,
+  RegisterRequest,
+  RegisterResponse,
+  LoginRequest,
+  LoginResponse,
+} from './types';
 
 // База: index.php без route.
 // У .env має бути ТАК:
@@ -40,6 +49,60 @@ async function request<T>(
 
   const json: T = (await response.json()) as T;
   return json;
+}
+
+async function postRequest<T>(
+  route: string,
+  body: Record<string, string | number>,
+): Promise<T> {
+  const url: string = `${BASE_URL}?route=${route}`;
+
+  if (__DEV__) {
+    console.log('shopApi POST request:', url, body);
+  }
+
+  // Конвертуємо body у URLSearchParams для form-encoded формату
+  const formBody = Object.entries(body)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
+    )
+    .join('&');
+
+  if (__DEV__) {
+    console.log('shopApi POST formBody:', formBody);
+  }
+
+  const response: Response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: formBody,
+  });
+
+  if (__DEV__) {
+    console.log('shopApi POST response status:', response.status);
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.error('API Error response:', text);
+    throw new Error(`API Error (${response.status}): ${url}`);
+  }
+
+  const text = await response.text();
+  if (__DEV__) {
+    console.log('shopApi POST response text:', text);
+  }
+
+  try {
+    const json: T = JSON.parse(text) as T;
+    return json;
+  } catch (e) {
+    console.error('Failed to parse JSON:', text);
+    throw new Error('Invalid JSON response from server');
+  }
 }
 
 /* ===========================
@@ -86,5 +149,26 @@ export function getProduct(id: number): Promise<ProductFull> {
   return request<ProductFull>({
     route: 'api/product/getProduct',
     id,
+  });
+}
+
+// 5) Реєстрація користувача
+export function registerCustomer(
+  data: RegisterRequest,
+): Promise<RegisterResponse> {
+  return postRequest<RegisterResponse>('api/customerregister', {
+    firstname: data.firstname,
+    lastname: data.lastname,
+    email: data.email,
+    telephone: data.telephone,
+    password: data.password,
+  });
+}
+
+// 6) Логін користувача
+export function loginCustomer(data: LoginRequest): Promise<LoginResponse> {
+  return postRequest<LoginResponse>('api/customerlogin', {
+    email: data.email,
+    password: data.password,
   });
 }

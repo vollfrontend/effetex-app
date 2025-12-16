@@ -9,10 +9,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
+import { registerCustomer, loginCustomer } from '@/src/api/shopApi';
 
 // i18n
 import { useTranslation } from 'react-i18next';
@@ -24,11 +27,14 @@ export const AuthScreen = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const [mode, setMode] = useState<AuthMode>('login');
+  const [loading, setLoading] = useState(false);
 
   // State for inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [telephone, setTelephone] = useState('');
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -67,11 +73,64 @@ export const AuthScreen = () => {
     },
   });
 
-  const handleAction = () => {
-    if (mode === 'login') {
-      console.log('Login with:', email, password);
-    } else {
-      console.log('Register with:', name, email, password);
+  const handleAction = async () => {
+    setLoading(true);
+
+    try {
+      if (mode === 'login') {
+        // Логін
+        const response = await loginCustomer({
+          email,
+          password,
+        });
+
+        console.log('Login response:', JSON.stringify(response, null, 2));
+
+        if (response.success) {
+          Alert.alert(t('auth.success'), t('auth.loginSuccess'));
+          // TODO: Зберегти токен/customer_id у стор
+        } else {
+          const errorMsg =
+            typeof response.error === 'string'
+              ? response.error
+              : typeof response.message === 'string'
+              ? response.message
+              : JSON.stringify(response.error || response.message || response);
+          Alert.alert(t('auth.error'), errorMsg);
+        }
+      } else {
+        // Реєстрація
+        const response = await registerCustomer({
+          firstname,
+          lastname,
+          email,
+          telephone,
+          password,
+        });
+
+        console.log('Register response:', JSON.stringify(response, null, 2));
+
+        if (response.success) {
+          Alert.alert(t('auth.success'), t('auth.registerSuccess'));
+          // Можна автоматично перейти на логін або залогінити
+          setMode('login');
+        } else {
+          const errorMsg =
+            typeof response.error === 'string'
+              ? response.error
+              : typeof response.message === 'string'
+              ? response.message
+              : JSON.stringify(response.error || response.message || response);
+          Alert.alert(t('auth.error'), errorMsg);
+        }
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
+      Alert.alert(t('auth.error'), errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,13 +158,32 @@ export const AuthScreen = () => {
 
           <View style={styles.form}>
             {mode === 'register' && (
-              <TextInput
-                style={dynamicStyles.input}
-                placeholder={t('auth.name')}
-                placeholderTextColor={theme.textSecondary}
-                value={name}
-                onChangeText={setName}
-              />
+              <>
+                <TextInput
+                  style={dynamicStyles.input}
+                  placeholder={t('auth.firstname')}
+                  placeholderTextColor={theme.textSecondary}
+                  value={firstname}
+                  onChangeText={setFirstname}
+                  autoCapitalize="words"
+                />
+                <TextInput
+                  style={dynamicStyles.input}
+                  placeholder={t('auth.lastname')}
+                  placeholderTextColor={theme.textSecondary}
+                  value={lastname}
+                  onChangeText={setLastname}
+                  autoCapitalize="words"
+                />
+                <TextInput
+                  style={dynamicStyles.input}
+                  placeholder={t('auth.telephone')}
+                  placeholderTextColor={theme.textSecondary}
+                  value={telephone}
+                  onChangeText={setTelephone}
+                  keyboardType="phone-pad"
+                />
+              </>
             )}
 
             <TextInput
@@ -130,10 +208,15 @@ export const AuthScreen = () => {
             <TouchableOpacity
               style={dynamicStyles.button}
               onPress={handleAction}
+              disabled={loading}
             >
-              <Text style={dynamicStyles.buttonText}>
-                {mode === 'login' ? t('auth.login') : t('auth.register')}
-              </Text>
+              {loading ? (
+                <ActivityIndicator color={theme.white} />
+              ) : (
+                <Text style={dynamicStyles.buttonText}>
+                  {mode === 'login' ? t('auth.login') : t('auth.register')}
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
 

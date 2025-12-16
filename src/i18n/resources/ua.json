@@ -40,7 +40,14 @@
     "noAccount": "Немає акаунту? ",
     "alreadyHaveAccount": "Вже маєте акаунт? ",
     "name": "Ім'я",
-    "password": "Пароль"
+    "firstname": "Ім'я",
+    "lastname": "Прізвище",
+    "telephone": "Телефон",
+    "password": "Пароль",
+    "error": "Помилка",
+    "success": "Успішно",
+    "loginSuccess": "Ви успішно увійшли!",
+    "registerSuccess": "Ви успішно зареєструвалися!"
   },
   "cart": {
     "title": "Кошик",

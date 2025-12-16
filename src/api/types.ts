@@ -152,3 +152,39 @@ export interface FavoriteProduct {
   price: number;
   image: string;
 }
+
+// =====================================================
+// 🔐 АВТОРИЗАЦІЯ
+// =====================================================
+
+// Реєстрація користувача
+export interface RegisterRequest {
+  firstname: string;
+  lastname: string;
+  email: string;
+  telephone: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  success?: boolean;
+  error?: string | Record<string, any>;
+  message?: string | Record<string, any>;
+  customer_id?: number;
+  [key: string]: any; // Для інших можливих полів від API
+}
+
+// Логін користувача
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  success?: boolean;
+  error?: string | Record<string, any>;
+  message?: string | Record<string, any>;
+  customer_id?: number;
+  token?: string;
+  [key: string]: any; // Для інших можливих полів від API
+}

@@ -40,7 +40,14 @@
     "noAccount": "Нет аккаунта? ",
     "alreadyHaveAccount": "Уже есть аккаунт? ",
     "name": "Имя",
-    "password": "Пароль"
+    "firstname": "Имя",
+    "lastname": "Фамилия",
+    "telephone": "Телефон",
+    "password": "Пароль",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "loginSuccess": "Вы успешно вошли!",
+    "registerSuccess": "Вы успешно зарегистрировались!"
   },
   "cart": {
     "title": "Корзина",
