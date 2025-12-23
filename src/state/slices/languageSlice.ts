@@ -1,7 +1,12 @@
 import type { LanguageSlice, RootState, Language } from '@/src/state/types';
 import { getLanguages } from '@/src/api/shopApi';
 
-type StoreSet = (partial: RootState | Partial<RootState>) => void;
+type StoreSet = (
+  partial:
+    | RootState
+    | Partial<RootState>
+    | ((state: RootState) => RootState | Partial<RootState>),
+) => void;
 type StoreGet = () => RootState;
 
 export const createLanguageSlice = (
@@ -9,9 +14,7 @@ export const createLanguageSlice = (
   get: StoreGet,
 ): LanguageSlice => ({
   availableLanguages: [],
-  currentLanguage: '', // Буде встановлено після завантаження
-  currentLanguageId: 0, // Буде встановлено після завантаження
-  isLanguagesLoaded: false,
+  // currentLanguage, currentLanguageId, isLanguagesLoaded moved to SettingsSlice
 
   // Завантажити мови з API
   loadLanguages: async () => {
@@ -41,10 +44,10 @@ export const createLanguageSlice = (
       );
 
       if (languages && languages.length > 0) {
-        set({
+        set((state) => ({
           availableLanguages: languages,
-          isLanguagesLoaded: true,
-        });
+          settings: { ...state.settings, isLanguagesLoaded: true },
+        }));
 
         // Знайти українську мову за замовчуванням
         // const currentState = get();
@@ -66,70 +69,46 @@ export const createLanguageSlice = (
           defaultLang.name,
           `(${defaultLang.code})`,
         );
-        set({
-          currentLanguage: defaultLang.code,
-          currentLanguageId: defaultLang.language_id,
-        });
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            currentLanguage: defaultLang.code,
+            currentLanguageId: defaultLang.language_id,
+          },
+        }));
       } else {
         console.warn('⚠️ No languages received from API');
         console.warn('⚠️ Response was:', response);
-        set({
-          isLanguagesLoaded: true,
-        });
+        set((state) => ({
+          settings: { ...state.settings, isLanguagesLoaded: true },
+        }));
       }
     } catch (error) {
       console.error('❌ Failed to load languages:', error);
       console.error('❌ Error details:', JSON.stringify(error, null, 2));
-      set({
-        isLanguagesLoaded: true,
-      });
+      set((state) => ({
+        settings: { ...state.settings, isLanguagesLoaded: true },
+      }));
     }
   },
 
   // Встановити доступні мови (якщо потрібно встановити вручну)
   setAvailableLanguages: languages => {
-    set({
+    set((state) => ({
       availableLanguages: languages,
-      isLanguagesLoaded: true,
-    });
+      settings: { ...state.settings, isLanguagesLoaded: true },
+    }));
   },
 
-  // Встановити поточну мову за кодом
-  setCurrentLanguage: languageCode => {
-    const state = get();
-    const lang = state.availableLanguages.find(l => l.code === languageCode);
 
-    if (lang) {
-      console.log('🌐 Language changed to:', lang.name, `(${lang.code})`);
-      set({
-        currentLanguage: languageCode,
-        currentLanguageId: lang.language_id,
-      });
-    } else {
-      console.warn('⚠️ Language not found for code:', languageCode);
-    }
-  },
 
-  // Встановити поточну мову за ID
-  setCurrentLanguageById: languageId => {
-    const state = get();
-    const lang = state.availableLanguages.find(
-      l => l.language_id === languageId,
-    );
 
-    if (lang) {
-      set({
-        currentLanguage: lang.code,
-        currentLanguageId: languageId,
-      });
-    }
-  },
 
   // Отримати об'єкт поточної мови
   getCurrentLanguageObject: () => {
     const state = get();
     return state.availableLanguages.find(
-      lang => lang.code === state.currentLanguage,
+      lang => lang.code === state.settings.currentLanguage,
     );
   },
 });

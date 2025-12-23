@@ -22,12 +22,9 @@ export interface CategoriesSlice {
 }
 
 // ---------- NAVIGATION ----------
-export interface NavigationSlice {
-  currentRoute: string | null;
-  setCurrentRoute: (route: string) => void;
-  isSideMenuOpen: boolean;
-  setSideMenuOpen: (isOpen: boolean) => void;
-}
+// ---------- NAVIGATION ----------
+// Navigation properties moved to Settings
+
 
 // ---------- CART ----------
 export interface CartItem extends Product {
@@ -47,22 +44,31 @@ export interface CartSlice {
 
 export interface LanguageSlice {
   availableLanguages: Language[];
-  currentLanguage: string; // code з Language
-  currentLanguageId: number; // language_id з Language
-  isLanguagesLoaded: boolean;
   setAvailableLanguages: (languages: Language[]) => void;
-  setCurrentLanguage: (languageCode: string) => void;
-  setCurrentLanguageById: (languageId: number) => void;
   getCurrentLanguageObject: () => Language | undefined;
   loadLanguages: () => Promise<void>;
 }
 
 // ---------- SETTINGS ----------
-export interface SettingsSlice {
+export interface SettingsState {
   theme: 'light' | 'dark';
   language: 'uk' | 'en';
+  currentRoute: string | null;
+  isSideMenuOpen: boolean;
+  currentLanguage: string;
+  currentLanguageId: number;
+  isLanguagesLoaded: boolean;
+  isAuthenticated: boolean;
+}
+
+export interface SettingsSlice {
+  settings: SettingsState;
   setTheme: (theme: 'light' | 'dark') => void;
   setLanguage: (language: 'uk' | 'en') => void;
+  setCurrentRoute: (route: string) => void;
+  setSideMenuOpen: (isOpen: boolean) => void;
+  setCurrentLanguage: (languageCode: string) => void;
+  setCurrentLanguageById: (languageId: number) => void;
 }
 
 // ---------- AUTH ----------
@@ -77,7 +83,6 @@ export interface User {
 
 export interface AuthSlice {
   user: User | null;
-  isAuthenticated: boolean;
   setUser: (user: User | null) => void;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
@@ -87,7 +92,6 @@ export interface AuthSlice {
 export interface RootState
   extends FavoritesSlice,
     CategoriesSlice,
-    NavigationSlice,
     CartSlice,
     LanguageSlice,
     SettingsSlice,

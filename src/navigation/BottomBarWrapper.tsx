@@ -5,10 +5,10 @@ import { nav } from './navigationRef';
 import { useStore } from '@/src/state/userStore';
 
 export const BottomBarWrapper = () => {
-  const currentRoute = useStore(state => state.currentRoute);
-
+  const currentRoute = useStore(state => state.settings.currentRoute);
+  // const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
   const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
-  const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
+  const isSideMenuOpen = useStore(state => state.settings.isSideMenuOpen);
 
   // Якщо маршрут ще не встановлено — вважаємо Home
   const route = currentRoute ?? 'Home';

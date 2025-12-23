@@ -6,9 +6,9 @@ import { useStore } from '@/src/state/userStore';
  */
 export const useLanguage = () => {
   const availableLanguages = useStore(state => state.availableLanguages);
-  const currentLanguage = useStore(state => state.currentLanguage);
-  const currentLanguageId = useStore(state => state.currentLanguageId);
-  const isLanguagesLoaded = useStore(state => state.isLanguagesLoaded);
+  const currentLanguage = useStore(state => state.settings.currentLanguage);
+  const currentLanguageId = useStore(state => state.settings.currentLanguageId);
+  const isLanguagesLoaded = useStore(state => state.settings.isLanguagesLoaded);
   const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
   const setCurrentLanguageById = useStore(state => state.setCurrentLanguageById);
   const loadLanguages = useStore(state => state.loadLanguages);

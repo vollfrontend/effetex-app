@@ -7,7 +7,6 @@ import { zustandLogger } from '@/src/state/zustandLogger';
 
 // Slices
 import { createFavoritesSlice } from '@/src/state/slices/favoritesSlice';
-import { createNavigationSlice } from '@/src/state/slices/navigation';
 import { createCategoriesSlice } from '@/src/state/slices/categoriesSlice';
 import { createCartSlice } from '@/src/state/slices/cartSlice';
 import { createAuthSlice } from '@/src/state/slices/authSlice';
@@ -22,7 +21,6 @@ export const useStore = create<RootState>()(
     persist(
       zustandLogger((set, get) => ({
         ...createFavoritesSlice(set, get),
-        ...createNavigationSlice(set),
         ...createCategoriesSlice(set, get),
         ...createCartSlice(set, get),
         ...createLanguageSlice(set, get),
@@ -34,14 +32,9 @@ export const useStore = create<RootState>()(
         storage: createJSONStorage(() => AsyncStorage),
         partialize: state => ({
           user: state.user,
-          isAuthenticated: state.isAuthenticated,
           favorites: state.favorites,
           cart: state.cart,
-          theme: state.theme,
-          // Persist language settings from both slices just in case
-          language: state.language,
-          currentLanguage: state.currentLanguage,
-          currentLanguageId: state.currentLanguageId,
+          settings: state.settings,
         }),
       },
     ),

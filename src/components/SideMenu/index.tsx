@@ -19,21 +19,22 @@ import { AvailableLang, changeLanguage } from '@/src/i18n';
 import { useTranslation } from 'react-i18next';
 
 export const SideMenu = () => {
-  const isSideMenuOpen = useStore(state => state.isSideMenuOpen);
+  const isSideMenuOpen = useStore(state => state.settings.isSideMenuOpen);
   const setSideMenuOpen = useStore(state => state.setSideMenuOpen);
 
   // Auth
+  // Auth
   const user = useStore(state => state.user);
-  const isAuthenticated = useStore(state => state.isAuthenticated);
+  const isAuthenticated = useStore(state => state.settings.isAuthenticated);
   const logout = useStore(state => state.logout);
 
   // Settings
-  const themeMode = useStore(state => state.theme);
+  const themeMode = useStore(state => state.settings.theme);
   const setTheme = useStore(state => state.setTheme);
-  const currentLanguage = useStore(state => state.currentLanguage);
+  const currentLanguage = useStore(state => state.settings.currentLanguage);
   const availableLanguages = useStore(state => state.availableLanguages);
   const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
-  const isLanguagesLoaded = useStore(state => state.isLanguagesLoaded);
+  const isLanguagesLoaded = useStore(state => state.settings.isLanguagesLoaded);
   const theme = useTheme();
   const { t } = useTranslation();
 

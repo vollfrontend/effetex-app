@@ -8,20 +8,20 @@ export const createAuthSlice = (
   get: StoreApi<RootState>['getState'],
 ): AuthSlice => ({
   user: null,
-  isAuthenticated: false,
+
 
   setUser: user => {
-    set({
+    set((state) => ({
       user,
-      isAuthenticated: !!user,
-    });
+      settings: { ...state.settings, isAuthenticated: !!user },
+    }));
   },
 
   logout: () => {
-    set({
+    set((state) => ({
       user: null,
-      isAuthenticated: false,
-    });
+      settings: { ...state.settings, isAuthenticated: false },
+    }));
   },
 
   updateUser: updates => {
