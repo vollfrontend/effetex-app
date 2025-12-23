@@ -4,8 +4,10 @@ import {
   ProductItem,
   ProductFull,
 } from './types';
+import Config from 'react-native-config';
 
-const API_BASE_URL = 'https://effetex-shop.voll.top/index.php';
+const API_BASE_URL: string =
+  Config.API_BASE_URL ?? 'https://effetex-shop.voll.top/index.php';
 
 const buildQueryString = (
   params: Record<string, string | number | undefined>,
