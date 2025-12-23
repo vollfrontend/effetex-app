@@ -130,6 +130,173 @@ export const getOneProduct = async (
   return mapApiProductFull(json);
 };
 
+// -------------------------
+// WISHLIST
+// -------------------------
+
+type ApiWishlistItem = {
+  product_id: string | number;
+  name: string;
+  image: string;
+  price: string | number;
+  special?: string | number | null;
+  rating?: number;
+  reviews?: number | string;
+};
+
+type AddToWishlistResponse = {
+  success?: string;
+  error?: string;
+};
+
+type DeleteFromWishlistResponse = {
+  success?: string;
+  error?: string;
+};
+
+const parseApiWishlistResponse = (data: unknown): ApiWishlistItem[] => {
+  if (!data) return [];
+
+  if (Array.isArray(data)) {
+    return data.filter((x): x is ApiWishlistItem => {
+      if (!x || typeof x !== 'object') return false;
+
+      const obj = x as Record<string, unknown>;
+      return (
+        'product_id' in obj && 'name' in obj && 'image' in obj && 'price' in obj
+      );
+    });
+  }
+
+  if (typeof data === 'object') {
+    const obj = data as Record<string, unknown>;
+    return Object.values(obj).filter((x): x is ApiWishlistItem => {
+      if (!x || typeof x !== 'object') return false;
+
+      const item = x as Record<string, unknown>;
+      return (
+        'product_id' in item &&
+        'name' in item &&
+        'image' in item &&
+        'price' in item
+      );
+    });
+  }
+
+  return [];
+};
+
+export const getWishlist = async (params: {
+  sessionId: string;
+  languageId?: number;
+}): Promise<ProductItem[]> => {
+  const queryString = buildQueryString({
+    route: 'api/customerwishlist/get',
+    token: params.sessionId,
+    language_id: params.languageId ?? 1,
+  });
+
+  const url = `${API_BASE_URL}?${queryString}`;
+
+  const response = await fetch(url, { method: 'GET' });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ${response.status}`);
+  }
+
+  const json: unknown = await response.json();
+
+  const apiItems = parseApiWishlistResponse(json);
+
+  return apiItems.map(item =>
+    mapApiProductShort(
+      {
+        product_id: item.product_id,
+        name: item.name,
+        image: item.image,
+        price: item.price,
+        special: item.special ?? undefined,
+        rating: item.rating,
+        reviews: item.reviews,
+      },
+      0,
+    ),
+  );
+};
+
+export const addToWishlist = async (params: {
+  productId: number;
+  sessionId: string;
+}): Promise<AddToWishlistResponse> => {
+  const queryString = buildQueryString({
+    route: 'api/customerwishlist/add',
+    token: params.sessionId,
+  });
+
+  const url = `${API_BASE_URL}?${queryString}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      product_id: params.productId,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ${response.status}`);
+  }
+
+  const json: unknown = await response.json();
+
+  if (!json || typeof json !== 'object') {
+    return {};
+  }
+
+  return json as AddToWishlistResponse;
+};
+
+export const deleteFromWishlist = async (params: {
+  productId: number;
+  sessionId: string;
+}): Promise<DeleteFromWishlistResponse> => {
+  const queryString = buildQueryString({
+    route: 'api/customerwishlist/delete',
+    token: params.sessionId,
+  });
+
+  const url = `${API_BASE_URL}?${queryString}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      product_id: params.productId,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ${response.status}`);
+  }
+
+  const json: unknown = await response.json();
+
+  if (!json || typeof json !== 'object') {
+    return {};
+  }
+
+  return json as DeleteFromWishlistResponse;
+};
+
+// -------------------------
+// MAP API PRODUCT FULL
+// -------------------------
 const mapApiProductFull = (data: any): ProductFull => {
   return {
     product_id: data.product_id,
