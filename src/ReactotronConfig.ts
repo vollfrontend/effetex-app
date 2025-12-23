@@ -5,8 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // ПРАВИЛЬНИЙ ІМПОРТ (без фігурних дужок)
 import reactotronZustand from 'reactotron-plugin-zustand';
 
-import { useStore } from './state/userStore';
-
 let scriptHostname = 'localhost';
 if (__DEV__) {
   const scriptURL = NativeModules.SourceCode?.scriptURL;
@@ -28,11 +26,23 @@ const reactotron = Reactotron.configure({
       ignoreUrls: /symbolicate|localhost:8081/i,
     },
   })
-  // Додаємо плагін тут
-.use(reactotronZustand({
-  stores: [{ name: 'UserStore', store: useStore }],
-  omitFunctionKeys: true // ОСЬ ЦЕЙ РЯДОК ПРИБЕРЕ ВСІ МЕТОДИ
-}))
   .connect();
+
+// Підключаємо Zustand плагін після створення store (lazy)
+if (__DEV__) {
+  setTimeout(() => {
+    try {
+      const { useStore } = require('./state/userStore');
+      reactotron.use?.(
+        reactotronZustand({
+          stores: [{ name: 'UserStore', store: useStore }],
+          omitFunctionKeys: true,
+        }),
+      );
+    } catch (error) {
+      console.warn('Не вдалося підключити Reactotron Zustand плагін:', error);
+    }
+  }, 100);
+}
 
 export default reactotron;

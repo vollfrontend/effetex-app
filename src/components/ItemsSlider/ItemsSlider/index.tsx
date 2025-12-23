@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 
 // API
-import { getProducts } from '@/src/api/productsNew';
+import { getProducts } from '@/src/api/products';
 
 // State
 import { useStore } from '@/src/state/userStore';

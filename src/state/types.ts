@@ -9,9 +9,12 @@ export type { Language };
 // ---------- FAVORITES ----------
 export interface FavoritesSlice {
   favorites: Product[];
+  isLoadingWishlist: boolean;
   addToFavorites: (item: Product) => void;
   removeFromFavorites: (id: string) => void;
   isFavorite: (id: string) => boolean;
+  fetchWishlist: () => Promise<void>;
+  setFavorites: (items: Product[]) => void;
 }
 
 // ---------- CATEGORIES ----------
@@ -24,7 +27,6 @@ export interface CategoriesSlice {
 // ---------- NAVIGATION ----------
 // ---------- NAVIGATION ----------
 // Navigation properties moved to Settings
-
 
 // ---------- CART ----------
 export interface CartItem extends Product {

@@ -19,9 +19,7 @@ export const createLanguageSlice = (
   // Завантажити мови з API
   loadLanguages: async () => {
     try {
-      console.log('🔄 Starting to load languages from API...');
       const response = await getLanguages();
-      console.log('📦 Raw response from API:', response);
 
       // API повертає об'єкт, а не масив - конвертуємо
       let languages: Language[] = [];
@@ -33,18 +31,11 @@ export const createLanguageSlice = (
         } else if (typeof response === 'object') {
           // Якщо це об'єкт - конвертуємо в масив
           languages = Object.values(response);
-          console.log('🔄 Converted object to array');
         }
       }
 
-      console.log(
-        '✅ Loaded languages from API:',
-        languages.length,
-        'languages',
-      );
-
       if (languages && languages.length > 0) {
-        set((state) => ({
+        set(state => ({
           availableLanguages: languages,
           settings: { ...state.settings, isLanguagesLoaded: true },
         }));
@@ -64,12 +55,7 @@ export const createLanguageSlice = (
 
         const defaultLang = ukLang || languages[0];
 
-        console.log(
-          '✅ Default language set to:',
-          defaultLang.name,
-          `(${defaultLang.code})`,
-        );
-        set((state) => ({
+        set(state => ({
           settings: {
             ...state.settings,
             currentLanguage: defaultLang.code,
@@ -79,14 +65,14 @@ export const createLanguageSlice = (
       } else {
         console.warn('⚠️ No languages received from API');
         console.warn('⚠️ Response was:', response);
-        set((state) => ({
+        set(state => ({
           settings: { ...state.settings, isLanguagesLoaded: true },
         }));
       }
     } catch (error) {
       console.error('❌ Failed to load languages:', error);
       console.error('❌ Error details:', JSON.stringify(error, null, 2));
-      set((state) => ({
+      set(state => ({
         settings: { ...state.settings, isLanguagesLoaded: true },
       }));
     }
@@ -94,15 +80,11 @@ export const createLanguageSlice = (
 
   // Встановити доступні мови (якщо потрібно встановити вручну)
   setAvailableLanguages: languages => {
-    set((state) => ({
+    set(state => ({
       availableLanguages: languages,
       settings: { ...state.settings, isLanguagesLoaded: true },
     }));
   },
-
-
-
-
 
   // Отримати об'єкт поточної мови
   getCurrentLanguageObject: () => {

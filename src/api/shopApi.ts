@@ -37,10 +37,6 @@ async function request<T>(
   const queryString: string = buildQueryString(params);
   const url: string = `${BASE_URL}?${queryString}`;
 
-  if (__DEV__) {
-    console.log('shopApi request:', url);
-  }
-
   const response: Response = await fetch(url);
 
   if (!response.ok) {

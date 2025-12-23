@@ -5,10 +5,7 @@ import { logZustandAction } from '../zustandLogger';
 type StoreSet = (partial: RootState | Partial<RootState>) => void;
 type StoreGet = () => RootState;
 
-export const createCartSlice = (
-  set: StoreSet,
-  get: StoreGet,
-): CartSlice => ({
+export const createCartSlice = (set: StoreSet, get: StoreGet): CartSlice => ({
   cart: [],
 
   addToCart: (product: Product) => {
@@ -26,12 +23,7 @@ export const createCartSlice = (
       nextCart = [...cart, { ...product, quantity: 1 }];
     }
 
-    logZustandAction<RootState, 'cart'>(
-      'cart/add',
-      'cart',
-      cart,
-      nextCart,
-    );
+    logZustandAction<RootState, 'cart'>('cart/add', 'cart', cart, nextCart);
 
     set({ cart: nextCart });
   },
@@ -40,12 +32,7 @@ export const createCartSlice = (
     const { cart } = get();
     const nextCart = cart.filter(item => item.id !== productId);
 
-    logZustandAction<RootState, 'cart'>(
-        'cart/remove',
-        'cart',
-        cart,
-        nextCart,
-    );
+    logZustandAction<RootState, 'cart'>('cart/remove', 'cart', cart, nextCart);
 
     set({ cart: nextCart });
   },
@@ -62,15 +49,15 @@ export const createCartSlice = (
       })
       .filter(item => item.quantity > 0);
 
-      // Simple log, not differentiating increase/decrease
-      /* logZustandAction<RootState, 'cart'>(
+    // Simple log, not differentiating increase/decrease
+    /* logZustandAction<RootState, 'cart'>(
         'cart/changeQuantity',
         'cart',
         cart,
         nextCart,
       ); */
 
-      set({ cart: nextCart });
+    set({ cart: nextCart });
   },
 
   clearCart: () => {

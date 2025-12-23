@@ -1,5 +1,4 @@
 import { BottomBar } from '@/src/components/BottomBar';
-import { ProductBottomBar } from '@/src/components/BottomBar/ProductBottomBar';
 import { nav } from './navigationRef';
 
 import { useStore } from '@/src/state/userStore';
@@ -12,6 +11,8 @@ export const BottomBarWrapper = () => {
 
   // Якщо маршрут ще не встановлено — вважаємо Home
   const route = currentRoute ?? 'Home';
+
+  console.log('route', route);
 
   // Спеціальний бар для Product — тепер він рендериться всередині ProductScreen
   if (route === 'Product') {

@@ -27,7 +27,11 @@ const SearchResults: FC<SearchResultsProps> = ({ results, onSelect }) => {
       data={results}
       keyExtractor={(item: Product) => item.id}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.item} activeOpacity={0.7} onPress={() => onSelect(item.id)}>
+        <TouchableOpacity
+          style={styles.item}
+          activeOpacity={0.7}
+          onPress={() => onSelect(item.id)}
+        >
           <Image source={{ uri: item.image }} style={styles.image} />
           <View style={styles.info}>
             <Text style={styles.title}>{item.title}</Text>

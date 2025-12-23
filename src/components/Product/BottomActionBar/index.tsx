@@ -42,7 +42,6 @@ const BottomActionBar: FC<BottomActionBarProps> = ({
           />
         </TouchableOpacity>
       </View>
-      </TouchableOpacity>
     </View>
   );
 };

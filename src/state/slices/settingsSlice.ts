@@ -19,12 +19,21 @@ export const createSettingsSlice = (set: StoreSet): SettingsSlice => ({
     isAuthenticated: false,
   },
 
-  setTheme: (theme) => set((state) => ({ settings: { ...state.settings, theme } })),
-  setLanguage: (language) => set((state) => ({ settings: { ...state.settings, language } })),
+  setTheme: theme => set(state => ({ settings: { ...state.settings, theme } })),
+  setLanguage: language =>
+    set(state => ({ settings: { ...state.settings, language } })),
 
-  setCurrentRoute: (route) => set((state) => ({ settings: { ...state.settings, currentRoute: route } })),
-  setSideMenuOpen: (isOpen) => set((state) => ({ settings: { ...state.settings, isSideMenuOpen: isOpen } })),
+  setCurrentRoute: route =>
+    set(state => ({ settings: { ...state.settings, currentRoute: route } })),
+  setSideMenuOpen: isOpen =>
+    set(state => ({ settings: { ...state.settings, isSideMenuOpen: isOpen } })),
 
-  setCurrentLanguage: (languageCode) => set((state) => ({ settings: { ...state.settings, currentLanguage: languageCode } })),
-  setCurrentLanguageById: (languageId) => set((state) => ({ settings: { ...state.settings, currentLanguageId: languageId } })),
+  setCurrentLanguage: languageCode =>
+    set(state => ({
+      settings: { ...state.settings, currentLanguage: languageCode },
+    })),
+  setCurrentLanguageById: languageId =>
+    set(state => ({
+      settings: { ...state.settings, currentLanguageId: languageId },
+    })),
 });

@@ -1,7 +1,13 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 // State
 import { useStore } from '@/src/state/userStore';
@@ -21,11 +27,40 @@ export const FavoritesScreen = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
   const favorites = useStore(state => state.favorites);
+  const isLoadingWishlist = useStore(state => state.isLoadingWishlist);
+  const fetchWishlist = useStore(state => state.fetchWishlist);
+  const user = useStore(state => state.user);
   const theme = useTheme();
+
+  // Завантажуємо wishlist при фокусі на екрані
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user && user.token) {
+        fetchWishlist();
+      }
+    }, [user, fetchWishlist]),
+  );
 
   const handleGoShopping = () => {
     navigation.navigate('Home');
   };
+
+  if (isLoadingWishlist) {
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.background }]}
+      >
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
+            {t('favorites.title')}
+          </Text>
+        </View>
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator size="large" color={theme.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (favorites.length === 0) {
     return (

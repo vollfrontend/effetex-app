@@ -1,13 +1,18 @@
 import { FC, useCallback, useEffect } from 'react';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigationRef';
-import { MainLayout } from './MainLayout';
+
+// State
 import { useStore } from '../state/userStore';
+
+// Components
+import { MainLayout } from './MainLayout';
 import { BottomBarWrapper } from './BottomBarWrapper';
 import { SideMenu } from '@/src/components/SideMenu';
-import { View } from 'react-native';
 
-// Zustand store
+//Styles
+import { styles } from './styles';
 
 // Функція, що отримує активний маршрут з дерева навігації
 function getActiveRouteName(state: any): string | null {
@@ -27,7 +32,6 @@ export const RootNavigation: FC = () => {
 
   // Завантажити мови при старті додатку
   useEffect(() => {
-    console.log('🚀 App started, loading languages...');
     loadLanguages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Викликати тільки один раз при монтуванні
@@ -42,7 +46,7 @@ export const RootNavigation: FC = () => {
 
   return (
     <NavigationContainer ref={navigationRef} onStateChange={handleStateChange}>
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         {/* Всі екрани */}
         <MainLayout />
 

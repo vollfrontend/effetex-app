@@ -1,10 +1,14 @@
 // React & RN
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // API
-import { getOneProduct } from '@/src/api/productsNew';
+import {
+  getOneProduct,
+  addToWishlist,
+  deleteFromWishlist,
+} from '@/src/api/products';
 
 // Components
 import ProductHeader from '@/src/components/Product/ProductHeader';
@@ -57,9 +61,12 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   const { productId } = route.params;
   const theme = useTheme();
 
+  const sessionId = useStore(state => state.user?.token);
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>('description');
+  const [wishlistLoading, setWishlistLoading] = useState<boolean>(false);
 
   const navigation = useNavigation<any>();
   const addToCart = useStore(state => state.addToCart);
@@ -68,33 +75,85 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   const addToFavorites = useStore(state => state.addToFavorites);
   const removeFromFavorites = useStore(state => state.removeFromFavorites);
 
-  const isFavorite = product
-    ? favorites.some(fav => fav.id === product.product_id)
-    : false;
+  const isFavorite = useMemo<boolean>(() => {
+    if (!product) return false;
 
-  const handleWishlist = () => {
+    const pid = Number(product.product_id);
+    return favorites.some(fav => Number(fav.id) === pid);
+  }, [favorites, product]);
+
+  const handleWishlist = useCallback(async (): Promise<void> => {
     if (!product) return;
 
-    if (isFavorite) {
-      removeFromFavorites(product.product_id);
-    } else {
-      addToFavorites({
-        id: product.product_id,
-        title: product.name,
-        image: product.image,
-        price: Number(product.special || product.price),
-        badge: '',
-        oldPrice: product.special ? Number(product.price) : undefined,
-        discount: product.special
-          ? Math.round(
-              ((Number(product.price) - Number(product.special)) /
-                Number(product.price)) *
-                100,
-            )
-          : 0,
-      });
+    const pid = Number(product.product_id);
+
+    // Якщо немає токена — можна редіректнути на логін або просто вийти
+    if (!sessionId) {
+      // navigation.navigate('Login'); // якщо є такий екран
+      return;
     }
-  };
+
+    if (wishlistLoading) return;
+
+    setWishlistLoading(true);
+
+    // Готуємо дані для локального store (як у тебе було)
+    const localItem = {
+      id: String(product.product_id),
+      title: product.name,
+      image: product.image,
+      price: Number(product.special || product.price),
+      badge: '',
+      oldPrice: product.special ? Number(product.price) : undefined,
+      discount: product.special
+        ? Math.round(
+            ((Number(product.price) - Number(product.special)) /
+              Number(product.price)) *
+              100,
+          )
+        : 0,
+    };
+
+    try {
+      if (isFavorite) {
+        // optimistic remove
+        removeFromFavorites(String(product.product_id));
+
+        await deleteFromWishlist({
+          productId: pid,
+          sessionId,
+        });
+
+        return;
+      }
+
+      // optimistic add
+      addToFavorites(localItem);
+
+      await addToWishlist({
+        productId: pid,
+        sessionId,
+      });
+    } catch (e: unknown) {
+      // rollback, якщо API впало
+      if (isFavorite) {
+        addToFavorites(localItem);
+      } else {
+        removeFromFavorites(String(product.product_id));
+      }
+
+      console.error(e);
+    } finally {
+      setWishlistLoading(false);
+    }
+  }, [
+    product,
+    sessionId,
+    wishlistLoading,
+    isFavorite,
+    addToFavorites,
+    removeFromFavorites,
+  ]);
 
   const handleBuy = () => {
     if (!product) return;

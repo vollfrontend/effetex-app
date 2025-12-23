@@ -22,7 +22,7 @@ import {
   RootStackNavigationProp,
 } from '@/src/navigation/types';
 import { ProductItem } from '@/src/api/types';
-import { getProducts } from '@/src/api/productsNew';
+import { getProducts } from '@/src/api/products';
 
 type CategoryProductsRoute = RouteProp<RootStackParamList, 'CategoryProducts'>;
 

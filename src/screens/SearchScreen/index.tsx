@@ -14,7 +14,7 @@ import ProductItem from '@/src/components/ItemsSlider/ItemCard';
 import Header from '@/src/components/Header';
 
 // Data
-import { products, Product } from '@/src/api/products';
+import { products, Product } from '@/src/api/productsOld';
 
 // Styles
 import { styles } from './styles';

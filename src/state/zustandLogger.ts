@@ -1,6 +1,19 @@
 // Libraries
 import type { StateCreator } from 'zustand';
-import Reactotron from '@/src/ReactotronConfig';
+
+// Lazy load Reactotron to avoid circular dependency
+let Reactotron: any = null;
+const getReactotron = () => {
+  if (!Reactotron && __DEV__) {
+    try {
+      // Lazy import to break circular dependency
+      Reactotron = require('@/src/ReactotronConfig').default;
+    } catch (error) {
+      console.warn('Reactotron не вдалося завантажити:', error);
+    }
+  }
+  return Reactotron;
+};
 
 // Helpers
 function isFunction(value: unknown): value is (...args: never[]) => unknown {
@@ -49,20 +62,21 @@ export const zustandLogger =
         });
 
         // Patch log
-        Reactotron.log?.({
+        const reactotron = getReactotron();
+        reactotron?.log?.({
           type: 'ZUSTAND_SET',
           replace,
           partial: nextState,
         });
 
         // Full state snapshot (ONLY data, no functions)
-        Reactotron.log?.({
+        reactotron?.log?.({
           type: 'FULL_STATE',
           state: fullData,
         });
 
         // Diff (ONLY changed data keys)
-        Reactotron.log?.({
+        reactotron?.log?.({
           type: 'ZUSTAND_DIFF',
           diff,
         });
@@ -82,7 +96,8 @@ export function logZustandAction<T extends object, K extends keyof T>(
   before: T[K],
   after: T[K],
 ): void {
-  Reactotron.log?.({
+  const reactotron = getReactotron();
+  reactotron?.log?.({
     type: 'ZUSTAND_ACTION',
     action,
     slice: String(slice),
