@@ -1,5 +1,6 @@
 // React & RN
-import React, { FC, useState, useRef, useEffect } from 'react';
+import { FC, useState, useRef, useEffect } from 'react';
+import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import {
   View,
   Text,
@@ -176,7 +177,43 @@ const PromoSlider: FC<PromoSliderProps> = ({ data, onSlidePress }) => {
                     resizeMode="cover"
                   />
                   {item.title && (
-                    <View style={styles.titleOverlay}>
+                    // <View style={styles.titleOverlay}>
+                    //   <Text style={styles.slideTitle}>{item.title}</Text>
+                    // </View>
+
+                    <View style={[styles.container, { width: width }]}>
+                      <Svg width={width} height={120} style={styles.gradient}>
+                        <Defs>
+                          <LinearGradient
+                            id="bannerGradient"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <Stop
+                              offset="0"
+                              stopColor="transparent"
+                              stopOpacity={0}
+                            />
+                            <Stop
+                              offset="1"
+                              stopColor="#525252"
+                              stopOpacity={1}
+                            />
+                          </LinearGradient>
+                        </Defs>
+
+                        <Rect
+                          x={0}
+                          y={0}
+                          width={width}
+                          height={120}
+                          rx={0}
+                          fill="url(#bannerGradient)"
+                        />
+                      </Svg>
+
                       <Text style={styles.slideTitle}>{item.title}</Text>
                     </View>
                   )}

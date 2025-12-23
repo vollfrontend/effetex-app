@@ -60,6 +60,49 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
+  container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: width,
+    borderRadius: 0,
+    paddingVertical: 12,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 120, // ← мінімальна висота, щоб SVG міг розтягнутися
+  },
+
+  // SVG-заливка поверх container
+  gradient: {
+    height: 60,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
+  text: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '600',
+    display: 'flex',
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+  white: {
+    color: '#FFFFFF',
+  },
+  yellow: {
+    color: '#FFD500',
+  },
+
   price: {
     color: '#FFFFFF',
     fontSize: 12,
