@@ -12,6 +12,7 @@ export const lightTheme = {
   success: '#3BB54A',
   white: '#FFFFFF',
   black: '#000000',
+  error: '#FF3B30',
 };
 
 export const darkTheme = {
@@ -28,7 +29,7 @@ export const darkTheme = {
   success: '#3BB54A',
   white: '#FFFFFF',
   black: '#000000',
+  error: '#FF3B30',
 };
 
 export type Theme = typeof lightTheme;
-

@@ -9,7 +9,7 @@ import { useTheme } from '@/src/hooks/useTheme';
  */
 export const LanguageSelector = () => {
   const availableLanguages = useStore(state => state.availableLanguages);
-  const currentLanguage = useStore(state => state.currentLanguage);
+  const currentLanguage = useStore(state => state.settings.currentLanguage);
   const setCurrentLanguage = useStore(state => state.setCurrentLanguage);
   const theme = useTheme();
 
