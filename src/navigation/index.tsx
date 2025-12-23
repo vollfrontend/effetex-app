@@ -28,6 +28,7 @@ function getActiveRouteName(state: any): string | null {
 
 export const RootNavigation: FC = () => {
   const setCurrentRoute = useStore(s => s.setCurrentRoute);
+  const currentRoute = useStore(s => s.settings.currentRoute);
   const loadLanguages = useStore(s => s.loadLanguages);
 
   // Завантажити мови при старті додатку
@@ -44,8 +45,25 @@ export const RootNavigation: FC = () => {
     [setCurrentRoute],
   );
 
+  // Відновити збережений маршрут при завантаженні
+  const onReady = useCallback(() => {
+    if (currentRoute && navigationRef.current) {
+      const currentState = navigationRef.current.getState();
+      const activeRoute = getActiveRouteName(currentState);
+
+      // Якщо поточний екран не співпадає зі збереженим, навігуємо
+      if (activeRoute !== currentRoute) {
+        navigationRef.current.navigate(currentRoute as never);
+      }
+    }
+  }, [currentRoute]);
+
   return (
-    <NavigationContainer ref={navigationRef} onStateChange={handleStateChange}>
+    <NavigationContainer
+      ref={navigationRef}
+      onStateChange={handleStateChange}
+      onReady={onReady}
+    >
       <View style={styles.container}>
         {/* Всі екрани */}
         <MainLayout />
