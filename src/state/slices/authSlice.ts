@@ -1,14 +1,12 @@
 // src/state/slices/authSlice.ts
 
-import type { StateCreator } from 'zustand';
+import type { StoreApi } from 'zustand';
 import type { RootState, AuthSlice } from '@/src/state/types';
 
-export const createAuthSlice: StateCreator<
-  RootState,
-  [],
-  [],
-  AuthSlice
-> = set => ({
+export const createAuthSlice = (
+  set: StoreApi<RootState>['setState'],
+  get: StoreApi<RootState>['getState'],
+): AuthSlice => ({
   user: null,
   isAuthenticated: false,
 
