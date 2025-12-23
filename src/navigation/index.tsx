@@ -48,12 +48,25 @@ export const RootNavigation: FC = () => {
   // Відновити збережений маршрут при завантаженні
   const onReady = useCallback(() => {
     if (currentRoute && navigationRef.current) {
-      const currentState = navigationRef.current.getState();
-      const activeRoute = getActiveRouteName(currentState);
+      // Список базових маршрутів, які можна відновити без параметрів
+      const restorableRoutes = [
+        'Home',
+        'Search',
+        'Categories',
+        'Cart',
+        'Favorites',
+        'Profile',
+      ];
 
-      // Якщо поточний екран не співпадає зі збереженим, навігуємо
-      if (activeRoute !== currentRoute) {
-        navigationRef.current.navigate(currentRoute as never);
+      // Відновлюємо тільки якщо це базовий маршрут
+      if (restorableRoutes.includes(currentRoute)) {
+        const currentState = navigationRef.current.getState();
+        const activeRoute = getActiveRouteName(currentState);
+
+        // Якщо поточний екран не співпадає зі збереженим, навігуємо
+        if (activeRoute !== currentRoute) {
+          navigationRef.current.navigate(currentRoute as never);
+        }
       }
     }
   }, [currentRoute]);

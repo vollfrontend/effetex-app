@@ -14,7 +14,7 @@ type Props = {
   isFavorite: boolean;
   onCompare: () => void;
   onCart: () => void;
-  onWishlist: () => void;
+  addToWishlistToggle: () => void;
   onBuy: () => void;
 };
 
@@ -26,7 +26,7 @@ export const ProductBottomBar: FC<Props> = ({
   isFavorite,
   onCompare,
   onCart,
-  onWishlist,
+  addToWishlistToggle,
   onBuy,
 }) => {
   const theme = useTheme();
@@ -42,7 +42,7 @@ export const ProductBottomBar: FC<Props> = ({
         <CartIcon color={theme.iconDefault} size={24} focused={false} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={onWishlist}>
+      <TouchableOpacity onPress={addToWishlistToggle}>
         <FavoritesIcon
           color={isFavorite ? theme.iconActive : theme.iconDefault}
           size={24}

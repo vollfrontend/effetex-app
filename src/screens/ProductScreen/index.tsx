@@ -22,6 +22,12 @@ import ProductAttributes from '@/src/components/Product/ProductAttributes';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { InnerStackParamList } from '@/src/navigation/innerTypes';
 
+// Components
+import { ProductBottomBar } from '@/src/components/BottomBar/ProductBottomBar';
+
+// Store
+import { useStore } from '@/src/state/userStore';
+
 // Styles
 import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
@@ -29,8 +35,6 @@ import { useTheme } from '@/src/hooks/useTheme';
 // Types
 import type { ProductTab } from '@/src/components/Product/ProductTabs';
 import type { ProductImage } from '@/src/components/Product/ImageSlider/types';
-import { ProductBottomBar } from '@/src/components/BottomBar/ProductBottomBar';
-import { useStore } from '@/src/state/userStore';
 
 type Props = NativeStackScreenProps<InnerStackParamList, 'Product'>;
 
@@ -62,6 +66,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   const theme = useTheme();
 
   const sessionId = useStore(state => state.user?.token);
+  const productIdStore = useStore(state => state.settings.currentProductId);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -183,7 +188,9 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   useEffect(() => {
     const load = async () => {
       try {
-        const productOne: Product = await getOneProduct(Number(productId));
+        const productOne: Product = await getOneProduct(
+          Number(productId ?? productIdStore),
+        );
         setProduct(productOne);
       } catch (err) {
         console.log('API error:', err);
@@ -193,7 +200,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
     };
 
     load();
-  }, [productId]);
+  }, [productId, productIdStore]);
 
   if (loading) {
     return (
@@ -229,7 +236,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   const sliderImages: ProductImage[] = [
     {
       product_image_id: 'main',
-      product_id: String(product.product_id ?? productId),
+      product_id: String(product.product_id ?? productId ?? productIdStore),
       image: product.image,
       sort_order: '1',
     },
@@ -287,7 +294,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
         isFavorite={isFavorite}
         onCompare={() => {}}
         onCart={handleOpenCart}
-        onWishlist={handleWishlist}
+        addToWishlistToggle={handleWishlist}
         onBuy={handleBuy}
       />
     </View>

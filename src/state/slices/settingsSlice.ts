@@ -12,6 +12,7 @@ export const createSettingsSlice = (set: StoreSet): SettingsSlice => ({
     theme: 'light',
     language: 'uk',
     currentRoute: null,
+    currentProductId: null,
     isSideMenuOpen: false,
     currentLanguage: 'uk',
     currentLanguageId: 1,
@@ -25,6 +26,10 @@ export const createSettingsSlice = (set: StoreSet): SettingsSlice => ({
 
   setCurrentRoute: route =>
     set(state => ({ settings: { ...state.settings, currentRoute: route } })),
+
+  setCurrentProductId: id =>
+    set(state => ({ settings: { ...state.settings, currentProductId: id } })),
+
   setSideMenuOpen: isOpen =>
     set(state => ({ settings: { ...state.settings, isSideMenuOpen: isOpen } })),
 
@@ -32,6 +37,7 @@ export const createSettingsSlice = (set: StoreSet): SettingsSlice => ({
     set(state => ({
       settings: { ...state.settings, currentLanguage: languageCode },
     })),
+
   setCurrentLanguageById: languageId =>
     set(state => ({
       settings: { ...state.settings, currentLanguageId: languageId },
