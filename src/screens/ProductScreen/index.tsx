@@ -67,6 +67,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
 
   const sessionId = useStore(state => state.user?.token);
   const productIdStore = useStore(state => state.settings.currentProductId);
+  const setCurrentProductId = useStore(state => state.setCurrentProductId);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -192,6 +193,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
           Number(productId ?? productIdStore),
         );
         setProduct(productOne);
+        setCurrentProductId(Number(productId));
       } catch (err) {
         console.log('API error:', err);
       } finally {
@@ -200,7 +202,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
     };
 
     load();
-  }, [productId, productIdStore]);
+  }, [productId, productIdStore, setCurrentProductId]);
 
   if (loading) {
     return (
