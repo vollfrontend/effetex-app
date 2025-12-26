@@ -62,12 +62,14 @@ interface Product {
 }
 
 export const ProductScreen: FC<Props> = ({ route }) => {
-  const { productId } = route.params;
   const theme = useTheme();
 
   const sessionId = useStore(state => state.user?.token);
   const productIdStore = useStore(state => state.settings.currentProductId);
   const setCurrentProductId = useStore(state => state.setCurrentProductId);
+
+  // Використовуємо productId з параметрів або зі стору
+  const productId = route.params?.productId ?? productIdStore;
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -186,14 +188,24 @@ export const ProductScreen: FC<Props> = ({ route }) => {
     navigation.navigate('Cart');
   };
 
+  // Зберігаємо productId у сторі при зміні
+  useEffect(() => {
+    if (productId) {
+      setCurrentProductId(String(productId));
+    }
+  }, [productId, setCurrentProductId]);
+
   useEffect(() => {
     const load = async () => {
+      if (!productId) {
+        console.log('No productId available');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const productOne: Product = await getOneProduct(
-          Number(productId ?? productIdStore),
-        );
+        const productOne: Product = await getOneProduct(Number(productId));
         setProduct(productOne);
-        setCurrentProductId(Number(productId));
       } catch (err) {
         console.log('API error:', err);
       } finally {
@@ -202,7 +214,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
     };
 
     load();
-  }, [productId, productIdStore, setCurrentProductId]);
+  }, [productId]);
 
   if (loading) {
     return (

@@ -56,7 +56,7 @@ export interface SettingsState {
   theme: 'light' | 'dark';
   language: 'uk' | 'en';
   currentRoute: string | null;
-  currentProductId: number | null;
+  currentProductId: string | null;
   isSideMenuOpen: boolean;
   currentLanguage: string;
   currentLanguageId: number;
@@ -69,7 +69,7 @@ export interface SettingsSlice {
   setTheme: (theme: 'light' | 'dark') => void;
   setLanguage: (language: 'uk' | 'en') => void;
   setCurrentRoute: (route: string) => void;
-  setCurrentProductId: (id: number) => void;
+  setCurrentProductId: (id: string | null) => void;
   setSideMenuOpen: (isOpen: boolean) => void;
   setCurrentLanguage: (languageCode: string) => void;
   setCurrentLanguageById: (languageId: number) => void;

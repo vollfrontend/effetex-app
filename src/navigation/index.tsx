@@ -28,7 +28,9 @@ function getActiveRouteName(state: any): string | null {
 
 export const RootNavigation: FC = () => {
   const setCurrentRoute = useStore(s => s.setCurrentRoute);
+  const setCurrentProductId = useStore(s => s.setCurrentProductId);
   const currentRoute = useStore(s => s.settings.currentRoute);
+  const currentProductId = useStore(s => s.settings.currentProductId);
   const loadLanguages = useStore(s => s.loadLanguages);
 
   // Завантажити мови при старті додатку
@@ -40,36 +42,38 @@ export const RootNavigation: FC = () => {
   const handleStateChange = useCallback(
     (state: any) => {
       const routeName = getActiveRouteName(state);
-      if (routeName) setCurrentRoute(routeName);
+      if (routeName) {
+        setCurrentRoute(routeName);
+
+        // Якщо це не Product екран, очищаємо currentProductId
+        if (routeName !== 'Product') {
+          setCurrentProductId(null);
+        }
+      }
     },
-    [setCurrentRoute],
+    [setCurrentRoute, setCurrentProductId],
   );
 
   // Відновити збережений маршрут при завантаженні
   const onReady = useCallback(() => {
     if (currentRoute && navigationRef.current) {
-      // Список базових маршрутів, які можна відновити без параметрів
-      const restorableRoutes = [
-        'Home',
-        'Search',
-        'Categories',
-        'Cart',
-        'Favorites',
-        'Profile',
-      ];
+      const currentState = navigationRef.current.getState();
+      const activeRoute = getActiveRouteName(currentState);
 
-      // Відновлюємо тільки якщо це базовий маршрут
-      if (restorableRoutes.includes(currentRoute)) {
-        const currentState = navigationRef.current.getState();
-        const activeRoute = getActiveRouteName(currentState);
-
-        // Якщо поточний екран не співпадає зі збереженим, навігуємо
-        if (activeRoute !== currentRoute) {
-          navigationRef.current.navigate(currentRoute as never);
+      // Якщо поточний екран не співпадає зі збереженим, навігуємо
+      if (activeRoute !== currentRoute) {
+        // Для Product екрану потрібен productId
+        if (currentRoute === 'Product' && currentProductId) {
+          navigationRef.current.navigate('Product', {
+            productId: currentProductId,
+          });
+        } else if (currentRoute !== 'Product') {
+          // Для всіх інших маршрутів навігуємо без параметрів
+          navigationRef.current.navigate(currentRoute as any);
         }
       }
     }
-  }, [currentRoute]);
+  }, [currentRoute, currentProductId]);
 
   return (
     <NavigationContainer
