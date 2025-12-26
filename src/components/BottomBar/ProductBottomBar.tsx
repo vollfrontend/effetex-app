@@ -1,5 +1,13 @@
 import { FC } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
+
+// i18n
+import { useTranslation } from 'react-i18next';
+
+// Hooks
+import { useTheme } from '@/src/hooks/useTheme';
+
+// Styles
 import { styles } from './styles';
 import {
   CompareIcon,
@@ -7,9 +15,7 @@ import {
   FavoritesIcon,
 } from '@/src/components/IconButtons';
 
-// i18n
-import { useTranslation } from 'react-i18next';
-
+// Types
 type Props = {
   isFavorite: boolean;
   onCompare: () => void;
@@ -17,10 +23,6 @@ type Props = {
   addToWishlistToggle: () => void;
   onBuy: () => void;
 };
-
-import { useTheme } from '@/src/hooks/useTheme';
-
-// ... imports
 
 export const ProductBottomBar: FC<Props> = ({
   isFavorite,

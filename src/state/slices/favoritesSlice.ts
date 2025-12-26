@@ -2,7 +2,7 @@
 import { logZustandAction } from '@/src/state/zustandLogger';
 
 // API
-import { getWishlist } from '@/src/api/products';
+import { getWishlist, addToWishlist, deleteFromWishlist } from '@/src/api/products';
 import type { ProductItem } from '@/src/api/types';
 
 // Types
@@ -33,25 +33,49 @@ export const createFavoritesSlice = (
   favorites: [],
   isLoadingWishlist: false,
 
-  addToFavorites: (item: Product): void => {
-    const prevFavorites: Product[] = get().favorites;
+  addToFavorites: async (item: Product): Promise<void> => {
+    const state = get();
+    const prevFavorites: Product[] = state.favorites;
+    const user = state.user;
 
-    if (!prevFavorites.find(product => product.id === item.id)) {
-      const nextFavorites: Product[] = [...prevFavorites, item];
+    // Перевіряємо чи товар вже є в favorites
+    if (prevFavorites.find(product => product.id === item.id)) {
+      return;
+    }
 
-      logZustandAction<RootState, 'favorites'>(
-        'favorites/add',
-        'favorites',
-        prevFavorites,
-        nextFavorites,
-      );
+    // Оптимістичне оновлення - додаємо локально одразу
+    const nextFavorites: Product[] = [...prevFavorites, item];
 
-      set({ favorites: nextFavorites });
+    logZustandAction<RootState, 'favorites'>(
+      'favorites/add',
+      'favorites',
+      prevFavorites,
+      nextFavorites,
+    );
+
+    set({ favorites: nextFavorites });
+
+    // Синхронізуємо з API якщо користувач авторизований
+    if (user && user.token) {
+      try {
+        await addToWishlist({
+          productId: Number(item.id),
+          sessionId: user.token,
+        });
+      } catch (error) {
+        console.error('Помилка додавання до wishlist в API:', error);
+        // Rollback при помилці
+        set({ favorites: prevFavorites });
+      }
     }
   },
 
-  removeFromFavorites: (id: string): void => {
-    const prevFavorites: Product[] = get().favorites;
+  removeFromFavorites: async (id: string): Promise<void> => {
+    const state = get();
+    const prevFavorites: Product[] = state.favorites;
+    const user = state.user;
+
+    // Оптимістичне оновлення - видаляємо локально одразу
     const nextFavorites: Product[] = prevFavorites.filter(
       product => product.id !== id,
     );
@@ -63,9 +87,21 @@ export const createFavoritesSlice = (
       nextFavorites,
     );
 
-    set({
-      favorites: nextFavorites,
-    });
+    set({ favorites: nextFavorites });
+
+    // Синхронізуємо з API якщо користувач авторизований
+    if (user && user.token) {
+      try {
+        await deleteFromWishlist({
+          productId: Number(id),
+          sessionId: user.token,
+        });
+      } catch (error) {
+        console.error('Помилка видалення з wishlist в API:', error);
+        // Rollback при помилці
+        set({ favorites: prevFavorites });
+      }
+    }
   },
 
   isFavorite: (id: string): boolean => {

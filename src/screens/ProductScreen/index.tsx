@@ -4,11 +4,7 @@ import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // API
-import {
-  getOneProduct,
-  addToWishlist,
-  deleteFromWishlist,
-} from '@/src/api/products';
+import { getOneProduct } from '@/src/api/products';
 
 // Components
 import ProductHeader from '@/src/components/Product/ProductHeader';
@@ -93,8 +89,6 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   const handleWishlist = useCallback(async (): Promise<void> => {
     if (!product) return;
 
-    const pid = Number(product.product_id);
-
     // Якщо немає токена — можна редіректнути на логін або просто вийти
     if (!sessionId) {
       // navigation.navigate('Login'); // якщо є такий екран
@@ -105,7 +99,7 @@ export const ProductScreen: FC<Props> = ({ route }) => {
 
     setWishlistLoading(true);
 
-    // Готуємо дані для локального store (як у тебе було)
+    // Готуємо дані для локального store
     const localItem = {
       id: String(product.product_id),
       title: product.name,
@@ -124,33 +118,14 @@ export const ProductScreen: FC<Props> = ({ route }) => {
 
     try {
       if (isFavorite) {
-        // optimistic remove
-        removeFromFavorites(String(product.product_id));
-
-        await deleteFromWishlist({
-          productId: pid,
-          sessionId,
-        });
-
-        return;
-      }
-
-      // optimistic add
-      addToFavorites(localItem);
-
-      await addToWishlist({
-        productId: pid,
-        sessionId,
-      });
-    } catch (e: unknown) {
-      // rollback, якщо API впало
-      if (isFavorite) {
-        addToFavorites(localItem);
+        // Видаляємо з favorites (синхронізація з API всередині)
+        await removeFromFavorites(String(product.product_id));
       } else {
-        removeFromFavorites(String(product.product_id));
+        // Додаємо до favorites (синхронізація з API всередині)
+        await addToFavorites(localItem);
       }
-
-      console.error(e);
+    } catch (e: unknown) {
+      console.error('Помилка роботи з wishlist:', e);
     } finally {
       setWishlistLoading(false);
     }

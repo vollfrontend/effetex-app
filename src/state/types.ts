@@ -10,8 +10,8 @@ export type { Language };
 export interface FavoritesSlice {
   favorites: Product[];
   isLoadingWishlist: boolean;
-  addToFavorites: (item: Product) => void;
-  removeFromFavorites: (id: string) => void;
+  addToFavorites: (item: Product) => Promise<void>;
+  removeFromFavorites: (id: string) => Promise<void>;
   isFavorite: (id: string) => boolean;
   fetchWishlist: () => Promise<void>;
   setFavorites: (items: Product[]) => void;

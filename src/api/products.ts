@@ -245,15 +245,16 @@ export const addToWishlist = async (params: {
 
   const url = `${API_BASE_URL}?${queryString}`;
 
+  // Конвертуємо body у URLSearchParams для form-encoded формату
+  const formBody = `product_id=${encodeURIComponent(params.productId)}`;
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({
-      product_id: params.productId,
-    }),
+    body: formBody,
   });
 
   if (!response.ok) {
@@ -280,15 +281,16 @@ export const deleteFromWishlist = async (params: {
 
   const url = `${API_BASE_URL}?${queryString}`;
 
+  // Конвертуємо body у URLSearchParams для form-encoded формату
+  const formBody = `product_id=${encodeURIComponent(params.productId)}`;
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({
-      product_id: params.productId,
-    }),
+    body: formBody,
   });
 
   if (!response.ok) {
