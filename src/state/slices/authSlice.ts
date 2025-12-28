@@ -20,6 +20,8 @@ export const createAuthSlice = (
   logout: () => {
     set((state) => ({
       user: null,
+      favorites: [], // Очищаємо обране
+      cart: [], // Очищаємо кошик
       settings: { ...state.settings, isAuthenticated: false },
     }));
   },
