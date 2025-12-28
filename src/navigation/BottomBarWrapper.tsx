@@ -12,8 +12,6 @@ export const BottomBarWrapper = () => {
   // Якщо маршрут ще не встановлено — вважаємо Home
   const route = currentRoute ?? 'Home';
 
-  console.log('route', route);
-
   // Спеціальний бар для Product — тепер він рендериться всередині ProductScreen
   if (route === 'Product') {
     return null;

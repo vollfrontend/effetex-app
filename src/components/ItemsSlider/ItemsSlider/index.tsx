@@ -43,7 +43,7 @@ const ItemsSlider: FC<ItemsSliderProps> = ({ title, categoryName }) => {
         const data = await getProducts({
           categoryId: Number(currentCategory?.category_id),
         });
-        console.log('data.products', data.products);
+
         setProducts(
           data.products
             .filter((product: ProductItem) => Number.isFinite(product.id))

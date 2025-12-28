@@ -253,18 +253,13 @@ export const getWishlist = async (params: {
 
   const json: unknown = await response.json();
 
-  console.log('getWishlist: отримана відповідь від API:', json);
-
   // Витягуємо масив products з відповіді
   let productsData: unknown = json;
   if (json && typeof json === 'object' && 'products' in json) {
-    console.log('products', json);
     productsData = (json as Record<string, unknown>).products;
-    console.log('getWishlist: витягнуто products:', productsData);
   }
 
   const apiItems = parseApiWishlistResponse(productsData);
-  console.log('getWishlist: розпарсено товарів:', apiItems);
 
   return apiItems.map(item =>
     mapApiProductShort(

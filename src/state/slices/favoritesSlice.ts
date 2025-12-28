@@ -20,8 +20,6 @@ type StoreGet = () => RootState;
 
 // Mapper function to convert ProductItem to Product
 const mapProductItemToProduct = (item: ProductItem): Product => {
-  console.log('item', item);
-
   return {
     id: String(item.id),
     title: item.name,
@@ -112,7 +110,7 @@ export const createFavoritesSlice = (
         const removedItem = prevFavorites.find(p => p.id === id);
         showSuccess(
           i18next.t('favorites.removedFromFavorites'),
-          removedItem?.title || ''
+          removedItem?.title || '',
         );
       } catch (error) {
         console.error('Помилка видалення з wishlist в API:', error);
@@ -125,7 +123,7 @@ export const createFavoritesSlice = (
       const removedItem = prevFavorites.find(p => p.id === id);
       showSuccess(
         i18next.t('favorites.removedFromFavorites'),
-        removedItem?.title || ''
+        removedItem?.title || '',
       );
     }
   },
@@ -157,11 +155,6 @@ export const createFavoritesSlice = (
       return;
     }
 
-    console.log('fetchWishlist: Початок завантаження з API...', {
-      token: user.token.substring(0, 10) + '...',
-      languageId,
-    });
-
     set({ isLoadingWishlist: true } as Partial<RootState>);
 
     try {
@@ -169,8 +162,6 @@ export const createFavoritesSlice = (
         sessionId: user.token,
         languageId,
       });
-
-      console.log('fetchWishlist: Отримано товарів з API:', wishlistItems);
 
       const products = wishlistItems.map(mapProductItemToProduct);
 
@@ -185,11 +176,6 @@ export const createFavoritesSlice = (
         favorites: products,
         isLoadingWishlist: false,
       } as Partial<RootState>);
-
-      console.log(
-        'fetchWishlist: Успішно оновлено стор, товарів:',
-        products.length,
-      );
     } catch (error) {
       console.error('Помилка завантаження wishlist:', error);
       set({ isLoadingWishlist: false } as Partial<RootState>);

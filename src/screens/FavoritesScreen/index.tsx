@@ -32,18 +32,10 @@ export const FavoritesScreen = () => {
   const user = useStore(state => state.user);
   const theme = useTheme();
 
-  console.log('favorites', favorites);
-
   // Завантажуємо wishlist при фокусі на екрані
   useFocusEffect(
     React.useCallback(() => {
-      console.log('FavoritesScreen: useFocusEffect triggered', {
-        hasUser: !!user,
-        hasToken: !!user?.token,
-      });
-
       if (user && user.token) {
-        console.log('FavoritesScreen: Завантаження wishlist з API...');
         fetchWishlist();
       } else {
         console.log(
