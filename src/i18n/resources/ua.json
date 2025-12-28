@@ -17,7 +17,9 @@
   "favorites": {
     "title": "Обране",
     "empty": "Список бажань порожній",
-    "goShopping": "Перейти до покупок"
+    "goShopping": "Перейти до покупок",
+    "addedToFavorites": "Товар додано до обраного",
+    "removedFromFavorites": "Товар видалено з обраного"
   },
   "productBottomBar": {
     "buyNow": "Купити зараз"
@@ -48,13 +50,16 @@
     "error": "Помилка",
     "success": "Успішно",
     "loginSuccess": "Ви успішно увійшли!",
-    "registerSuccess": "Ви успішно зареєструвалися!"
+    "registerSuccess": "Ви успішно зареєструвалися!",
+    "logoutSuccess": "Ви успішно вийшли з системи"
   },
   "cart": {
     "title": "Кошик",
     "empty": "Кошик порожній",
     "goShopping": "Перейти до покупок",
     "total": "Разом:",
-    "checkout": "Оформити замовлення"
+    "checkout": "Оформити замовлення",
+    "addedToCart": "Товар додано до кошика",
+    "removedFromCart": "Товар видалено з кошика"
   }
 }

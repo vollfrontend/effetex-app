@@ -13,6 +13,7 @@ import { useStore } from '@/src/state/userStore';
 import { styles, CONFIG } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 import { nav } from '@/src/navigation/navigationRef';
+import { showSuccess } from '@/src/utils/toast';
 
 // i18n
 import { AvailableLang, changeLanguage } from '@/src/i18n';
@@ -150,6 +151,7 @@ export const SideMenu = () => {
   const handleLogout = () => {
     logout();
     handleClose();
+    showSuccess(t('auth.success'), t('auth.logoutSuccess'));
     nav('Home');
   };
 

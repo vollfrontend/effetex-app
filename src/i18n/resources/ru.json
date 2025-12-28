@@ -17,7 +17,9 @@
   "favorites": {
     "title": "Избранное",
     "empty": "Список избранного пуст",
-    "goShopping": "Перейти к покупкам"
+    "goShopping": "Перейти к покупкам",
+    "addedToFavorites": "Товар добавлен в избранное",
+    "removedFromFavorites": "Товар удален из избранного"
   },
   "productBottomBar": {
     "buyNow": "Купить сейчас"
@@ -48,13 +50,16 @@
     "error": "Ошибка",
     "success": "Успешно",
     "loginSuccess": "Вы успешно вошли!",
-    "registerSuccess": "Вы успешно зарегистрировались!"
+    "registerSuccess": "Вы успешно зарегистрировались!",
+    "logoutSuccess": "Вы успешно вышли из системы"
   },
   "cart": {
     "title": "Корзина",
     "empty": "Корзина пуста",
     "goShopping": "Перейти к покупкам",
     "total": "Всего:",
-    "checkout": "Оформить заказ"
+    "checkout": "Оформить заказ",
+    "addedToCart": "Товар добавлен в корзину",
+    "removedFromCart": "Товар удален из корзины"
   }
 }

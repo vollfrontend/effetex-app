@@ -1,5 +1,7 @@
 // Stores
 import { logZustandAction } from '@/src/state/zustandLogger';
+import { showSuccess, showError } from '@/src/utils/toast';
+import i18next from 'i18next';
 
 // API
 import {
@@ -68,11 +70,16 @@ export const createFavoritesSlice = (
           productId: Number(item.id),
           sessionId: user.token,
         });
+        showSuccess(i18next.t('favorites.addedToFavorites'), item.title);
       } catch (error) {
         console.error('Помилка додавання до wishlist в API:', error);
         // Rollback при помилці
         set({ favorites: prevFavorites });
+        showError(i18next.t('auth.error'), 'Не вдалося додати товар');
       }
+    } else {
+      // Показуємо повідомлення навіть для неавторизованих
+      showSuccess(i18next.t('favorites.addedToFavorites'), item.title);
     }
   },
 
@@ -102,11 +109,24 @@ export const createFavoritesSlice = (
           productId: Number(id),
           sessionId: user.token,
         });
+        const removedItem = prevFavorites.find(p => p.id === id);
+        showSuccess(
+          i18next.t('favorites.removedFromFavorites'),
+          removedItem?.title || ''
+        );
       } catch (error) {
         console.error('Помилка видалення з wishlist в API:', error);
         // Rollback при помилці
         set({ favorites: prevFavorites });
+        showError(i18next.t('auth.error'), 'Не вдалося видалити товар');
       }
+    } else {
+      // Показуємо повідомлення навіть для неавторизованих
+      const removedItem = prevFavorites.find(p => p.id === id);
+      showSuccess(
+        i18next.t('favorites.removedFromFavorites'),
+        removedItem?.title || ''
+      );
     }
   },
 

@@ -9,7 +9,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +17,7 @@ import { useTheme } from '@/src/hooks/useTheme';
 import { registerCustomer, loginCustomer } from '@/src/api/shopApi';
 import { useStore } from '@/src/state/userStore';
 import { nav } from '@/src/navigation/navigationRef';
+import { showSuccess, showError } from '@/src/utils/toast';
 
 // i18n
 import { useTranslation } from 'react-i18next';
@@ -105,10 +105,13 @@ export const AuthScreen = () => {
           // Завантажити wishlist після авторизації
           console.log('AuthScreen: Завантаження wishlist після авторизації...');
           fetchWishlist().catch(err =>
-            console.error('Помилка завантаження wishlist після авторизації:', err)
+            console.error(
+              'Помилка завантаження wishlist після авторизації:',
+              err,
+            ),
           );
 
-          Alert.alert(t('auth.success'), t('auth.loginSuccess'));
+          showSuccess(t('auth.success'), t('auth.loginSuccess'));
 
           // Перенаправити на головний екран
           nav('Home');
@@ -119,7 +122,7 @@ export const AuthScreen = () => {
               : typeof response.message === 'string'
               ? response.message
               : JSON.stringify(response.error || response.message || response);
-          Alert.alert(t('auth.error'), errorMsg);
+          showError(t('auth.error'), errorMsg);
         }
       } else {
         // Реєстрація
@@ -134,7 +137,7 @@ export const AuthScreen = () => {
         console.log('Register response:', JSON.stringify(response, null, 2));
 
         if (response.success) {
-          Alert.alert(t('auth.success'), t('auth.registerSuccess'));
+          showSuccess(t('auth.success'), t('auth.registerSuccess'));
 
           // Автоматично залогінити користувача після реєстрації
           if (response.customer) {
@@ -149,9 +152,14 @@ export const AuthScreen = () => {
             });
 
             // Завантажити wishlist після реєстрації
-            console.log('AuthScreen: Завантаження wishlist після реєстрації...');
+            console.log(
+              'AuthScreen: Завантаження wishlist після реєстрації...',
+            );
             fetchWishlist().catch(err =>
-              console.error('Помилка завантаження wishlist після реєстрації:', err)
+              console.error(
+                'Помилка завантаження wishlist після реєстрації:',
+                err,
+              ),
             );
 
             // Перенаправити на головний екран
@@ -167,14 +175,14 @@ export const AuthScreen = () => {
               : typeof response.message === 'string'
               ? response.message
               : JSON.stringify(response.error || response.message || response);
-          Alert.alert(t('auth.error'), errorMsg);
+          showError(t('auth.error'), errorMsg);
         }
       }
     } catch (error) {
       console.error('Auth error:', error);
       const errorMsg =
         error instanceof Error ? error.message : JSON.stringify(error);
-      Alert.alert(t('auth.error'), errorMsg);
+      showError(t('auth.error'), errorMsg);
     } finally {
       setLoading(false);
     }
