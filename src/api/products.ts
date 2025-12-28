@@ -146,6 +146,8 @@ export const getOneProduct = async (
 
 type ApiWishlistItem = {
   product_id: string | number;
+  price_value?: string | number;
+  special_value?: string | number;
   name: string;
   image: string;
   price: string | number;
@@ -167,17 +169,52 @@ type DeleteFromWishlistResponse = {
 const parseApiWishlistResponse = (data: unknown): ApiWishlistItem[] => {
   if (!data) return [];
 
+  // Якщо масив
   if (Array.isArray(data)) {
-    return data.filter((x): x is ApiWishlistItem => {
-      if (!x || typeof x !== 'object') return false;
+    // Перевіряємо чи це масив з об'єктами товарів
+    if (data.length > 0 && typeof data[0] === 'object' && data[0] !== null) {
+      const firstItem = data[0] as Record<string, unknown>;
 
-      const obj = x as Record<string, unknown>;
-      return (
-        'product_id' in obj && 'name' in obj && 'image' in obj && 'price' in obj
-      );
-    });
+      // Якщо перший елемент має product_id - це масив товарів
+      if ('product_id' in firstItem) {
+        return data.filter((x): x is ApiWishlistItem => {
+          if (!x || typeof x !== 'object') return false;
+          const obj = x as Record<string, unknown>;
+          return (
+            'product_id' in obj &&
+            'name' in obj &&
+            'image' in obj &&
+            'price' in obj
+          );
+        });
+      }
+
+      // Інакше це масив з об'єктом, де ключі - числа: [{"0": {...}, "1": {...}}]
+      const allItems: ApiWishlistItem[] = [];
+      for (const item of data) {
+        if (item && typeof item === 'object') {
+          const itemObj = item as Record<string, unknown>;
+          const values = Object.values(itemObj);
+          for (const value of values) {
+            if (value && typeof value === 'object') {
+              const product = value as Record<string, unknown>;
+              if (
+                'product_id' in product &&
+                'name' in product &&
+                'image' in product &&
+                'price' in product
+              ) {
+                allItems.push(product as ApiWishlistItem);
+              }
+            }
+          }
+        }
+      }
+      return allItems;
+    }
   }
 
+  // Якщо об'єкт (старий формат)
   if (typeof data === 'object') {
     const obj = data as Record<string, unknown>;
     return Object.values(obj).filter((x): x is ApiWishlistItem => {
@@ -216,7 +253,18 @@ export const getWishlist = async (params: {
 
   const json: unknown = await response.json();
 
-  const apiItems = parseApiWishlistResponse(json);
+  console.log('getWishlist: отримана відповідь від API:', json);
+
+  // Витягуємо масив products з відповіді
+  let productsData: unknown = json;
+  if (json && typeof json === 'object' && 'products' in json) {
+    console.log('products', json);
+    productsData = (json as Record<string, unknown>).products;
+    console.log('getWishlist: витягнуто products:', productsData);
+  }
+
+  const apiItems = parseApiWishlistResponse(productsData);
+  console.log('getWishlist: розпарсено товарів:', apiItems);
 
   return apiItems.map(item =>
     mapApiProductShort(
@@ -224,8 +272,8 @@ export const getWishlist = async (params: {
         product_id: item.product_id,
         name: item.name,
         image: item.image,
-        price: item.price,
-        special: item.special ?? undefined,
+        price: Number(item.price_value ?? 0),
+        special: Number(item.special_value ?? 0),
         rating: item.rating,
         reviews: item.reviews,
       },

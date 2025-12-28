@@ -1,12 +1,13 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS } from '@/src/constants/colors';
-
-const { width } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  columns: {
+    justifyContent: 'space-between',
   },
   header: {
     paddingHorizontal: 16,

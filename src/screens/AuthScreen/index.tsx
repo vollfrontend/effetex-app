@@ -29,6 +29,7 @@ export const AuthScreen = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const setUser = useStore(state => state.setUser);
+  const fetchWishlist = useStore(state => state.fetchWishlist);
   const [mode, setMode] = useState<AuthMode>('login');
   const [loading, setLoading] = useState(false);
 
@@ -101,6 +102,12 @@ export const AuthScreen = () => {
             token: response.token,
           });
 
+          // Завантажити wishlist після авторизації
+          console.log('AuthScreen: Завантаження wishlist після авторизації...');
+          fetchWishlist().catch(err =>
+            console.error('Помилка завантаження wishlist після авторизації:', err)
+          );
+
           Alert.alert(t('auth.success'), t('auth.loginSuccess'));
 
           // Перенаправити на головний екран
@@ -140,6 +147,12 @@ export const AuthScreen = () => {
               telephone: customer.telephone || telephone,
               token: response.token,
             });
+
+            // Завантажити wishlist після реєстрації
+            console.log('AuthScreen: Завантаження wishlist після реєстрації...');
+            fetchWishlist().catch(err =>
+              console.error('Помилка завантаження wishlist після реєстрації:', err)
+            );
 
             // Перенаправити на головний екран
             nav('Home');

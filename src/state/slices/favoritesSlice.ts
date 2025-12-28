@@ -2,29 +2,35 @@
 import { logZustandAction } from '@/src/state/zustandLogger';
 
 // API
-import { getWishlist, addToWishlist, deleteFromWishlist } from '@/src/api/products';
+import {
+  getWishlist,
+  addToWishlist,
+  deleteFromWishlist,
+} from '@/src/api/products';
 import type { ProductItem } from '@/src/api/types';
 
 // Types
 import type { RootState, FavoritesSlice } from '@/src/state/types';
-import type { Product } from '@/src/api/productsOld';
+import type { Product } from '@/src/api/products';
 
 type StoreSet = (partial: RootState | Partial<RootState>) => void;
 type StoreGet = () => RootState;
 
 // Mapper function to convert ProductItem to Product
-const mapProductItemToProduct = (item: ProductItem): Product => ({
-  id: String(item.id),
-  title: item.name,
-  image: item.image,
-  price: String(item.price),
-  oldPrice: item.special ? String(item.price) : undefined,
-  discount: item.special
-    ? Math.round((1 - Number(item.special) / item.price) * 100)
-    : undefined,
-  rating: item.rating,
-  reviews: item.reviews,
-});
+const mapProductItemToProduct = (item: ProductItem): Product => {
+  console.log('item', item);
+
+  return {
+    id: String(item.id),
+    title: item.name,
+    image: item.image,
+    price: Number(item.special ?? 0),
+    oldPrice: Number(item.price ?? 0),
+    discount: item.special
+      ? Math.round((1 - Number(item.price) / Number(item.special)) * 100)
+      : undefined,
+  };
+};
 
 export const createFavoritesSlice = (
   set: StoreSet,
@@ -131,6 +137,11 @@ export const createFavoritesSlice = (
       return;
     }
 
+    console.log('fetchWishlist: Початок завантаження з API...', {
+      token: user.token.substring(0, 10) + '...',
+      languageId,
+    });
+
     set({ isLoadingWishlist: true } as Partial<RootState>);
 
     try {
@@ -138,6 +149,8 @@ export const createFavoritesSlice = (
         sessionId: user.token,
         languageId,
       });
+
+      console.log('fetchWishlist: Отримано товарів з API:', wishlistItems);
 
       const products = wishlistItems.map(mapProductItemToProduct);
 
@@ -152,6 +165,11 @@ export const createFavoritesSlice = (
         favorites: products,
         isLoadingWishlist: false,
       } as Partial<RootState>);
+
+      console.log(
+        'fetchWishlist: Успішно оновлено стор, товарів:',
+        products.length,
+      );
     } catch (error) {
       console.error('Помилка завантаження wishlist:', error);
       set({ isLoadingWishlist: false } as Partial<RootState>);
