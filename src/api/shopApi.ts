@@ -177,7 +177,9 @@ export async function checkCustomerAuth(token: string): Promise<void> {
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `Auth check failed (${response.status}): ${errorText || 'no response body'}`,
+      `Auth check failed (${response.status}): ${
+        errorText || 'no response body'
+      }`,
     );
   }
 
@@ -185,5 +187,20 @@ export async function checkCustomerAuth(token: string): Promise<void> {
     await response.json();
   } catch (error) {
     console.warn('Failed to parse auth check response:', error);
+  }
+}
+
+export async function logoutCustomer(token: string): Promise<void> {
+  const url = `${BASE_URL}?route=api/customer/logout&token=${encodeURIComponent(
+    token,
+  )}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Logout failed (${response.status}): ${errorBody || 'no response body'}`,
+    );
   }
 }

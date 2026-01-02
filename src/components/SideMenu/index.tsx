@@ -14,6 +14,7 @@ import { styles, CONFIG } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 import { nav } from '@/src/navigation/navigationRef';
 import { showSuccess } from '@/src/utils/toast';
+import { logoutCustomer } from '@/src/api/shopApi';
 
 // i18n
 import { AvailableLang, changeLanguage } from '@/src/i18n';
@@ -148,7 +149,15 @@ export const SideMenu = () => {
     // setSideMenuOpen(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (user?.token) {
+      try {
+        await logoutCustomer(user.token);
+      } catch (error) {
+        console.error('Не вдалося виконати logout:', error);
+      }
+    }
+
     logout();
     handleClose();
     showSuccess(t('auth.success'), t('auth.logoutSuccess'));
