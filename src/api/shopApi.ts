@@ -166,3 +166,24 @@ export function loginCustomer(data: LoginRequest): Promise<LoginResponse> {
     password: data.password,
   });
 }
+
+export async function checkCustomerAuth(token: string): Promise<void> {
+  const url = `${BASE_URL}?route=api/customer/checkAuth&token=${encodeURIComponent(
+    token,
+  )}`;
+
+  const response: Response = await fetch(url);
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Auth check failed (${response.status}): ${errorText || 'no response body'}`,
+    );
+  }
+
+  try {
+    await response.json();
+  } catch (error) {
+    console.warn('Failed to parse auth check response:', error);
+  }
+}

@@ -20,7 +20,10 @@ const AppLayout: FC<PropsWithChildren> = ({ children }) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.safeArea} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={dynamicStyles.safeArea}
+      edges={['top', 'left', 'right']}
+    >
       <View style={dynamicStyles.container}>{children}</View>
     </SafeAreaView>
   );
