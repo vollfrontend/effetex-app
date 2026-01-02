@@ -33,6 +33,7 @@ const AUTH_TOKEN_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 export const MainLayout = () => {
   const theme = useTheme();
   const token = useStore(state => state.user?.token);
+  const logout = useStore(state => state.logout);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export const MainLayout = () => {
       }, Math.max(delay, 0));
     };
 
-    async function runCheck() {
+    async function runCheck(force = false) {
       if (!isActive) {
         return;
       }
@@ -71,13 +72,21 @@ export const MainLayout = () => {
       const lastCheckAt = storedTimestamp ? Number(storedTimestamp) : 0;
       const now = Date.now();
 
-      if (lastCheckAt && now - lastCheckAt < AUTH_TOKEN_CHECK_INTERVAL_MS) {
+      if (
+        !force &&
+        lastCheckAt &&
+        now - lastCheckAt < AUTH_TOKEN_CHECK_INTERVAL_MS
+      ) {
         scheduleNextCheck(AUTH_TOKEN_CHECK_INTERVAL_MS - (now - lastCheckAt));
         return;
       }
 
       try {
-        await checkCustomerAuth(currentToken);
+        const response = await checkCustomerAuth(currentToken);
+        if (response?.success === false) {
+          logout();
+          return;
+        }
       } catch (error) {
         console.error('Помилка перевірки авторизації:', error);
       } finally {
@@ -86,7 +95,7 @@ export const MainLayout = () => {
       }
     }
 
-    runCheck();
+    runCheck(true);
 
     return () => {
       isActive = false;
@@ -95,7 +104,7 @@ export const MainLayout = () => {
         timerRef.current = null;
       }
     };
-  }, [token]);
+  }, [token, logout]);
 
   const dynamicStyles = StyleSheet.create({
     container: {

@@ -167,7 +167,21 @@ export function loginCustomer(data: LoginRequest): Promise<LoginResponse> {
   });
 }
 
-export async function checkCustomerAuth(token: string): Promise<void> {
+export interface CheckAuthResponse {
+  success?: boolean;
+  authenticated?: boolean;
+  token?: string;
+  customer_id?: string | number;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  telephone?: string;
+  customer_group_id?: string | number;
+}
+
+export async function checkCustomerAuth(
+  token: string,
+): Promise<CheckAuthResponse> {
   const url = `${BASE_URL}?route=api/customer/checkAuth&token=${encodeURIComponent(
     token,
   )}`;
@@ -184,9 +198,11 @@ export async function checkCustomerAuth(token: string): Promise<void> {
   }
 
   try {
-    await response.json();
+    const json = await response.json();
+    return json as CheckAuthResponse;
   } catch (error) {
     console.warn('Failed to parse auth check response:', error);
+    return {};
   }
 }
 
