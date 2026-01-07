@@ -12,6 +12,10 @@ import {
   RegisterResponse,
   LoginRequest,
   LoginResponse,
+  PaymentMethod,
+  ShippingMethod,
+  CreateOrderRequest,
+  CreateOrderResponse,
 } from './types';
 
 // База: index.php без route.
@@ -36,6 +40,10 @@ async function request<T>(
 ): Promise<T> {
   const queryString: string = buildQueryString(params);
   const url: string = `${BASE_URL}?${queryString}`;
+
+  if (__DEV__) {
+    console.log('🔷 API request URL:', url);
+  }
 
   const response: Response = await fetch(url);
 
@@ -218,5 +226,71 @@ export async function logoutCustomer(token: string): Promise<void> {
     throw new Error(
       `Logout failed (${response.status}): ${errorBody || 'no response body'}`,
     );
+  }
+}
+
+// =====================================================
+// 📦 ЗАМОВЛЕННЯ
+// =====================================================
+
+// 7) Отримати доступні методи оплати
+export async function getPaymentMethods(): Promise<PaymentMethod> {
+  console.log('🟡 API: getPaymentMethods called');
+  const result = await request<PaymentMethod>({
+    route: 'api/order/getPaymentMethod',
+  });
+  console.log('🟡 API: getPaymentMethods result:', result);
+  return result;
+}
+
+// 8) Отримати доступні методи доставки
+export async function getShippingMethods(): Promise<ShippingMethod> {
+  console.log('🟡 API: getShippingMethods called');
+  const result = await request<ShippingMethod>({
+    route: 'api/order/getShippingMethod',
+  });
+  console.log('🟡 API: getShippingMethods result:', result);
+  return result;
+}
+
+// 9) Створити замовлення
+export async function createOrder(
+  data: CreateOrderRequest,
+): Promise<CreateOrderResponse> {
+  const url = `${BASE_URL}?route=api/order/createOrder`;
+
+  if (__DEV__) {
+    console.log('createOrder request:', url, data);
+  }
+
+  const response: Response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (__DEV__) {
+    console.log('createOrder response status:', response.status);
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.error('API Error response:', text);
+    throw new Error(`API Error (${response.status}): ${url}`);
+  }
+
+  const text = await response.text();
+  if (__DEV__) {
+    console.log('createOrder response text:', text);
+  }
+
+  try {
+    const json: CreateOrderResponse = JSON.parse(text) as CreateOrderResponse;
+    return json;
+  } catch (error) {
+    console.error('Failed to parse JSON:', error);
+    throw new Error('Invalid JSON response from server');
   }
 }

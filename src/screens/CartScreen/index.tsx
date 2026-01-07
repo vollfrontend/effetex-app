@@ -34,6 +34,10 @@ export const CartScreen = () => {
     navigation.navigate('Home');
   };
 
+  const handleCheckout = () => {
+    navigation.navigate('Checkout');
+  };
+
   const renderItem = ({ item }: { item: CartItem }) => {
     return (
       <View
@@ -169,7 +173,10 @@ export const CartScreen = () => {
                 {totalPrice} ₴
               </Text>
             </View>
-            <TouchableOpacity style={styles.checkoutButton}>
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={handleCheckout}
+            >
               <Text
                 style={[
                   styles.checkoutButtonText,

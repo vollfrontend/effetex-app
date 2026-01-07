@@ -1,5 +1,5 @@
 // React & RN
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 
 // Navigation
@@ -88,12 +88,14 @@ const ItemCard: FC<ItemCardProps> = ({
 
       <View style={styles.priceContainer}>
         <View>
-          {oldPrice && (
+          {oldPrice && price ? (
             <Text style={[styles.oldPrice, { color: theme.textSecondary }]}>
               {oldPrice} ₴
             </Text>
-          )}
-          <Text style={[styles.price, { color: theme.price }]}>{price} ₴</Text>
+          ) : null}
+          <Text style={[styles.price, { color: theme.price }]}>
+            {!price ? oldPrice : price} ₴
+          </Text>
         </View>
 
         {variant !== 'slider' && (
@@ -106,4 +108,4 @@ const ItemCard: FC<ItemCardProps> = ({
   );
 };
 
-export default ItemCard;
+export default memo(ItemCard);

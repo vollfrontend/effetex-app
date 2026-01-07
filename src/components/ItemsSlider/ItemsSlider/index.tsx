@@ -1,6 +1,12 @@
 // React & RN
-import { FC, useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { FC, useCallback, useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  ListRenderItemInfo,
+} from 'react-native';
 
 // API
 import { getProducts } from '@/src/api/products';
@@ -79,6 +85,22 @@ const ItemsSlider: FC<ItemsSliderProps> = ({ title, categoryName }) => {
     load();
   }, [currentCategory]);
 
+  const renderItem = useCallback(
+    ({ item }: ListRenderItemInfo<Product>) => (
+      <ItemCard
+        id={item.id}
+        title={item.title}
+        image={item.image}
+        badge={item.badge}
+        price={item.price}
+        oldPrice={item.oldPrice}
+        discount={item.discount}
+        variant="slider"
+      />
+    ),
+    [],
+  );
+
   if (error) {
     return (
       <View style={styles.center}>
@@ -104,18 +126,7 @@ const ItemsSlider: FC<ItemsSliderProps> = ({ title, categoryName }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <ItemCard
-            id={item.id}
-            title={item.title}
-            image={item.image}
-            badge={item.badge}
-            price={item.price}
-            oldPrice={item.oldPrice}
-            discount={item.discount}
-            variant="slider"
-          />
-        )}
+        renderItem={renderItem}
       />
     </View>
   );

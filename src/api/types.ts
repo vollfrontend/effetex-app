@@ -199,3 +199,107 @@ export interface LoginResponse {
   customer?: CustomerData;
   [key: string]: any; // Для інших можливих полів від API
 }
+
+// =====================================================
+// 📦 ЗАМОВЛЕННЯ
+// =====================================================
+
+export interface PaymentMethod {
+  payment_methods: {
+    cod: {
+      code: string;
+      sort_order: string;
+      title: string;
+    };
+    free_checkout: {
+      code: string;
+      sort_order: string;
+      title: string;
+    };
+  };
+  success: string;
+}
+
+export interface ShippingMethod {
+  shipping_methods: {
+    flat: {
+      code: string;
+      sort_order: string;
+      title: string;
+    };
+    pickup: {
+      code: string;
+      sort_order: string;
+      title: string;
+    };
+  };
+  success: string;
+}
+
+export interface OrderAddress {
+  firstname: string;
+  lastname: string;
+  company?: string;
+  address_1: string;
+  address_2?: string;
+  city: string;
+  country: string;
+  country_id: number;
+}
+
+export interface OrderCustomer {
+  customer_id?: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  telephone: string;
+}
+
+export interface OrderProductOption {
+  product_option_id: number;
+  product_option_value_id: number;
+  option_id: number;
+  option_value_id: number;
+  name: string;
+  value: string;
+}
+
+export interface OrderProduct {
+  product_id: number;
+  name: string;
+  model: string;
+  quantity: number;
+  price: number;
+  total: number;
+  option: OrderProductOption[];
+}
+
+export interface OrderTotal {
+  code: string;
+  title: string;
+  value: number;
+  sort_order: number;
+}
+
+export interface CreateOrderRequest {
+  customer: OrderCustomer;
+  payment_address: OrderAddress;
+  payment_method: PaymentMethod;
+  shipping_address: OrderAddress;
+  shipping_method: ShippingMethod;
+  products: OrderProduct[];
+  totals: OrderTotal[];
+  total: number;
+  comment?: string;
+  currency_code: string;
+  currency_id: number;
+  currency_value: number;
+  order_status_id: number;
+}
+
+export interface CreateOrderResponse {
+  success: boolean;
+  order_id?: number;
+  error?: string;
+  message?: string;
+}

@@ -9,4 +9,5 @@ export type InnerStackParamList = {
   BottomBarWrapper: undefined;
   CategoryProducts: { categoryId: number; categoryName: string };
   Auth: undefined;
+  Checkout: undefined;
 };

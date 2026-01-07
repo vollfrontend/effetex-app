@@ -94,6 +94,8 @@ export const FavoritesScreen = () => {
     );
   }
 
+  console.log('favorites', favorites);
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}

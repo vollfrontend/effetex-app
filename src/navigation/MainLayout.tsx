@@ -15,6 +15,7 @@ import { ProfileScreen } from '@/src/screens/ProfileScreen';
 import { ProductScreen } from '@/src/screens/ProductScreen';
 import CategoryProductsScreen from '@/src/screens/CategoryProductsScreen';
 import { AuthScreen } from '@/src/screens/AuthScreen';
+import { CheckoutScreen } from '@/src/screens/CheckoutScreen';
 
 // Styles
 import { styles } from './styles';
@@ -137,6 +138,7 @@ export const MainLayout = () => {
           component={CategoryProductsScreen as any}
         />
         <InnerStack.Screen name="Auth" component={AuthScreen} />
+        <InnerStack.Screen name="Checkout" component={CheckoutScreen} />
       </InnerStack.Navigator>
     </View>
   );
