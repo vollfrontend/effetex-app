@@ -12,8 +12,8 @@ import {
   RegisterResponse,
   LoginRequest,
   LoginResponse,
-  PaymentMethod,
-  ShippingMethod,
+  PaymentMethodsResponse,
+  ShippingMethodsResponse,
   CreateOrderRequest,
   CreateOrderResponse,
 } from './types';
@@ -234,9 +234,9 @@ export async function logoutCustomer(token: string): Promise<void> {
 // =====================================================
 
 // 7) Отримати доступні методи оплати
-export async function getPaymentMethods(): Promise<PaymentMethod> {
+export async function getPaymentMethods(): Promise<PaymentMethodsResponse> {
   console.log('🟡 API: getPaymentMethods called');
-  const result = await request<PaymentMethod>({
+  const result = await request<PaymentMethodsResponse>({
     route: 'api/order/getPaymentMethod',
   });
   console.log('🟡 API: getPaymentMethods result:', result);
@@ -244,9 +244,9 @@ export async function getPaymentMethods(): Promise<PaymentMethod> {
 }
 
 // 8) Отримати доступні методи доставки
-export async function getShippingMethods(): Promise<ShippingMethod> {
+export async function getShippingMethods(): Promise<ShippingMethodsResponse> {
   console.log('🟡 API: getShippingMethods called');
-  const result = await request<ShippingMethod>({
+  const result = await request<ShippingMethodsResponse>({
     route: 'api/order/getShippingMethod',
   });
   console.log('🟡 API: getShippingMethods result:', result);

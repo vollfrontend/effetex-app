@@ -204,35 +204,19 @@ export interface LoginResponse {
 // 📦 ЗАМОВЛЕННЯ
 // =====================================================
 
-export interface PaymentMethod {
-  payment_methods: {
-    cod: {
-      code: string;
-      sort_order: string;
-      title: string;
-    };
-    free_checkout: {
-      code: string;
-      sort_order: string;
-      title: string;
-    };
-  };
+export interface MethodOption {
+  code: string;
+  title: string;
+  sort_order?: string;
+}
+
+export interface PaymentMethodsResponse {
+  payment_methods: Record<string, MethodOption>;
   success: string;
 }
 
-export interface ShippingMethod {
-  shipping_methods: {
-    flat: {
-      code: string;
-      sort_order: string;
-      title: string;
-    };
-    pickup: {
-      code: string;
-      sort_order: string;
-      title: string;
-    };
-  };
+export interface ShippingMethodsResponse {
+  shipping_methods: Record<string, MethodOption>;
   success: string;
 }
 
@@ -284,9 +268,9 @@ export interface OrderTotal {
 export interface CreateOrderRequest {
   customer: OrderCustomer;
   payment_address: OrderAddress;
-  payment_method: PaymentMethod;
+  payment_method: MethodOption;
   shipping_address: OrderAddress;
-  shipping_method: ShippingMethod;
+  shipping_method: MethodOption;
   products: OrderProduct[];
   totals: OrderTotal[];
   total: number;

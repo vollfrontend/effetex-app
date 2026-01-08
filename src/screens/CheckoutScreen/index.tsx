@@ -21,8 +21,9 @@ import {
   createOrder,
 } from '@/src/api/shopApi';
 import {
-  PaymentMethod,
-  ShippingMethod,
+  PaymentMethodsResponse,
+  ShippingMethodsResponse,
+  MethodOption,
   CreateOrderRequest,
   OrderProduct,
 } from '@/src/api/types';
@@ -30,15 +31,15 @@ import {
 // i18n
 import { useTranslation } from 'react-i18next';
 
+// Components
+import { Icon } from '@/src/components/Icon';
+
 // Styles
 import { styles } from './styles';
 import { useTheme } from '@/src/hooks/useTheme';
 
 // Utils
 import { showSuccess, showError } from '@/src/utils/toast';
-
-// Components
-import { CustomPicker } from '@/src/components/CustomPicker';
 
 export const CheckoutScreen = () => {
   console.log('🔵 CheckoutScreen: Component rendered');
@@ -59,21 +60,24 @@ export const CheckoutScreen = () => {
   const [lastname, setLastname] = useState(user?.lastname || '');
   const [email, setEmail] = useState(user?.email || '');
   const [telephone, setTelephone] = useState(user?.telephone || '');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [city, setCity] = useState('');
+  const [address1, _setAddress1] = useState('');
+  const [address2, _setAddress2] = useState('');
+  const [city, _setCity] = useState('');
   const [comment, setComment] = useState('');
 
   // Available methods
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod>();
-  const [shippingMethods, setShippingMethods] = useState<ShippingMethod>();
+  const [paymentMethods, setPaymentMethods] =
+    useState<PaymentMethodsResponse | null>(null);
+  const [shippingMethods, setShippingMethods] =
+    useState<ShippingMethodsResponse | null>(null);
 
   // Selected methods
-  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(
+  const [selectedPayment, setSelectedPayment] = useState<MethodOption | null>(
     null,
   );
-  const [selectedShipping, setSelectedShipping] =
-    useState<ShippingMethod | null>(null);
+  const [selectedShipping, setSelectedShipping] = useState<MethodOption | null>(
+    null,
+  );
 
   // Loading states
   const [loading, setLoading] = useState(false);
@@ -96,8 +100,22 @@ export const CheckoutScreen = () => {
       // const paymentsArray = payments.payment_methods;
       // const shippingArray = shipping?.shipping_methods;
 
+      const paymentOptions = payments?.payment_methods
+        ? Object.values(payments.payment_methods)
+        : [];
+      const shippingOptions = shipping?.shipping_methods
+        ? Object.values(shipping.shipping_methods)
+        : [];
+
       setPaymentMethods(payments);
       setShippingMethods(shipping);
+
+      if (paymentOptions.length > 0) {
+        setSelectedPayment(paymentOptions[0]);
+      }
+      if (shippingOptions.length > 0) {
+        setSelectedShipping(shippingOptions[0]);
+      }
 
       // Auto-select first options
       // if (paymentsArray.length > 0) {
@@ -120,6 +138,18 @@ export const CheckoutScreen = () => {
     loadMethods();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const paymentOptions = useMemo(() => {
+    return paymentMethods?.payment_methods
+      ? Object.values(paymentMethods.payment_methods)
+      : [];
+  }, [paymentMethods]);
+
+  const shippingOptions = useMemo(() => {
+    return shippingMethods?.shipping_methods
+      ? Object.values(shippingMethods.shipping_methods)
+      : [];
+  }, [shippingMethods]);
 
   // Calculate total
   const totalPrice = useMemo(() => {
@@ -425,24 +455,73 @@ export const CheckoutScreen = () => {
                 2. {t('checkout.shippingMethod')}
               </Text>
 
-              {shippingMethods && shippingMethods.length > 0 ? (
-                <CustomPicker
-                  items={shippingMethods.map(method => ({
-                    label: method.title,
-                    value: method.code,
-                  }))}
-                  selectedValue={selectedShipping?.code || null}
-                  onValueChange={value => {
-                    const method = shippingMethods.find(m => m.code === value);
-                    if (method) {
-                      setSelectedShipping(method);
-                    }
-                  }}
-                  placeholder={t('checkout.selectShipping')}
-                  textColor={theme.textPrimary}
-                  borderColor={theme.border}
-                  backgroundColor={theme.cardBackground}
-                />
+              {shippingOptions.length > 0 ? (
+                <View style={styles.methodsList}>
+                  {shippingOptions.map(method => {
+                    const isPickup = method.code === 'pickup';
+                    const hint = isPickup
+                      ? t('checkout.shippingPickupHint')
+                      : t('checkout.shippingCarrierHint');
+                    const isSelected = selectedShipping?.code === method.code;
+                    return (
+                      <TouchableOpacity
+                        key={method.code}
+                        style={[
+                          styles.methodCard,
+                          isSelected
+                            ? styles.methodCardSelected
+                            : styles.methodCardDefault,
+                          {
+                            backgroundColor: isSelected
+                              ? theme.cardBackground
+                              : theme.background,
+                            borderColor: isSelected
+                              ? theme.primary
+                              : theme.border,
+                          },
+                        ]}
+                        onPress={() => setSelectedShipping(method)}
+                        activeOpacity={0.7}
+                      >
+                        <View style={[styles.methodIcon]}>
+                          <Text style={styles.methodIconText}>
+                            {isPickup ? (
+                              <Icon
+                                name="pickup"
+                                size={24}
+                                variant="original"
+                              />
+                            ) : (
+                              <Icon name="flat" size={24} variant="original" />
+                            )}
+                          </Text>
+                        </View>
+                        <View style={styles.methodContent}>
+                          <Text
+                            style={[
+                              styles.methodTitle,
+                              { color: theme.textPrimary },
+                            ]}
+                          >
+                            {method.title === 'pickup'
+                              ? t('checkout.shippingPickup')
+                              : method.title === 'flat'
+                              ? t('checkout.shippingFlat')
+                              : method.title}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.methodDescription,
+                              { color: theme.textSecondary },
+                            ]}
+                          >
+                            {hint}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
               ) : (
                 <Text
                   style={[
@@ -466,24 +545,59 @@ export const CheckoutScreen = () => {
                 3. {t('checkout.paymentMethod')}
               </Text>
 
-              {paymentMethods && paymentMethods.length > 0 ? (
-                <CustomPicker
-                  items={paymentMethods.map(method => ({
-                    label: method.title,
-                    value: method.code,
-                  }))}
-                  selectedValue={selectedPayment?.code || null}
-                  onValueChange={value => {
-                    const method = paymentMethods.find(m => m.code === value);
-                    if (method) {
-                      setSelectedPayment(method);
-                    }
-                  }}
-                  placeholder={t('checkout.selectPayment')}
-                  textColor={theme.textPrimary}
-                  borderColor={theme.border}
-                  backgroundColor={theme.cardBackground}
-                />
+              {paymentOptions.length > 0 ? (
+                <View style={styles.methodsList}>
+                  {paymentOptions.map(method => {
+                    const isSelected = selectedPayment?.code === method.code;
+                    return (
+                      <TouchableOpacity
+                        key={method.code}
+                        style={[
+                          styles.methodCard,
+                          isSelected
+                            ? styles.methodCardSelected
+                            : styles.methodCardDefault,
+                          {
+                            backgroundColor: isSelected
+                              ? theme.cardBackground
+                              : theme.background,
+                            borderColor: isSelected
+                              ? theme.primary
+                              : theme.border,
+                          },
+                        ]}
+                        onPress={() => setSelectedPayment(method)}
+                        activeOpacity={0.7}
+                      >
+                        <View style={[styles.methodIcon]}>
+                          <Icon name="cod" size={34} variant="original" />
+                        </View>
+                        <View style={styles.methodContent}>
+                          <Text
+                            style={[
+                              styles.methodTitle,
+                              { color: theme.textPrimary },
+                            ]}
+                          >
+                            {method.title === 'cod'
+                              ? t('checkout.paymentCod')
+                              : method.title === 'free_checkout'
+                              ? t('checkout.paymentFreeCheckout')
+                              : method.title}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.methodDescription,
+                              { color: theme.textSecondary },
+                            ]}
+                          >
+                            {t('checkout.paymentDescription')}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
               ) : (
                 <Text
                   style={[
@@ -494,6 +608,12 @@ export const CheckoutScreen = () => {
                   {t('checkout.noPaymentMethods')}
                 </Text>
               )}
+
+              <Text
+                style={[styles.paymentInfoText, { color: theme.textSecondary }]}
+              >
+                {t('checkout.paymentInfo')}
+              </Text>
             </View>
 
             {/* Comment Section */}

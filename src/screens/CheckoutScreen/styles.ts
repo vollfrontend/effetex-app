@@ -83,16 +83,30 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    borderWidth: 2,
     borderRadius: 12,
     marginBottom: 12,
+  },
+  methodCardDefault: {
+    borderWidth: 2,
+  },
+  methodCardSelected: {
+    borderWidth: 2,
   },
   methodIcon: {
     width: 48,
     height: 48,
     borderRadius: 8,
+    backgroundColor: '#f5f5f5',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+  },
+  methodIconRed: {
+    backgroundColor: '#E31E24',
+  },
+  methodIconOrange: {
+    backgroundColor: '#FF6B35',
   },
   methodIconText: {
     fontSize: 24,
@@ -108,6 +122,11 @@ export const styles = StyleSheet.create({
   methodDescription: {
     fontSize: 14,
     fontWeight: '400',
+  },
+  paymentInfoText: {
+    fontSize: 12,
+    marginTop: 12,
+    lineHeight: 18,
   },
   methodEmptyText: {
     fontSize: 14,
@@ -190,4 +209,3 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
