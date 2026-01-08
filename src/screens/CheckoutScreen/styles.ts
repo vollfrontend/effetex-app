@@ -123,6 +123,30 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '400',
   },
+  shippingDetailCard: {
+    marginTop: 12,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  shippingDetailTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  shippingDetailLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  pickupLocationList: {
+    marginTop: 4,
+  },
+  pickupLocationItem: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 6,
+  },
   paymentInfoText: {
     fontSize: 12,
     marginTop: 12,

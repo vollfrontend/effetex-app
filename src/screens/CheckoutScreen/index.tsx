@@ -62,8 +62,9 @@ export const CheckoutScreen = () => {
   const [telephone, setTelephone] = useState(user?.telephone || '');
   const [address1, _setAddress1] = useState('');
   const [address2, _setAddress2] = useState('');
-  const [city, _setCity] = useState('');
+  const [city, setCity] = useState('');
   const [comment, setComment] = useState('');
+  const [novaBranchNumber, setNovaBranchNumber] = useState('');
 
   // Available methods
   const [paymentMethods, setPaymentMethods] =
@@ -156,6 +157,16 @@ export const CheckoutScreen = () => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
+  const pickupLocations = useMemo(() => {
+    const data = t('checkout.pickupLocations', {
+      returnObjects: true,
+    }) as unknown;
+    return Array.isArray(data) ? (data as string[]) : [];
+  }, [t]);
+
+  const isNovaDelivery = selectedShipping?.code === 'flat';
+  const isPickupDelivery = selectedShipping?.code === 'pickup';
+
   // Validate form
   const validateForm = (): boolean => {
     if (!firstname.trim()) {
@@ -180,6 +191,10 @@ export const CheckoutScreen = () => {
     }
     if (!city.trim()) {
       showError(t('checkout.enterCity'));
+      return false;
+    }
+    if (isNovaDelivery && !novaBranchNumber.trim()) {
+      showError(t('checkout.enterBranchNumber'));
       return false;
     }
     if (!selectedPayment) {
@@ -214,6 +229,12 @@ export const CheckoutScreen = () => {
       }));
 
       // Prepare order data
+      const resolvedAddress1 = isNovaDelivery
+        ? `${t('checkout.shippingFlat')} – ${t(
+            'checkout.branchNumberLabel',
+          )} №${novaBranchNumber}`
+        : address1;
+
       const orderData: CreateOrderRequest = {
         customer: {
           customer_id: user?.customer_id,
@@ -225,7 +246,7 @@ export const CheckoutScreen = () => {
         payment_address: {
           firstname,
           lastname,
-          address_1: address1,
+          address_1: resolvedAddress1,
           address_2: address2,
           city,
           country: 'Україна',
@@ -238,7 +259,7 @@ export const CheckoutScreen = () => {
         shipping_address: {
           firstname,
           lastname,
-          address_1: address1,
+          address_1: resolvedAddress1,
           address_2: address2,
           city,
           country: 'Україна',
@@ -531,6 +552,96 @@ export const CheckoutScreen = () => {
                 >
                   {t('checkout.noShippingMethods')}
                 </Text>
+              )}
+              {isNovaDelivery && (
+                <View
+                  style={[
+                    styles.shippingDetailCard,
+                    {
+                      backgroundColor: theme.background,
+                      borderColor: theme.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.shippingDetailTitle,
+                      { color: theme.textPrimary },
+                    ]}
+                  >
+                    {t('checkout.novaDeliveryDetails')}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.shippingDetailLabel,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
+                    {`${t('checkout.city')}*`}
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { color: theme.textPrimary, borderColor: theme.border },
+                    ]}
+                    placeholder={t('checkout.cityPlaceholder')}
+                    placeholderTextColor={theme.textSecondary}
+                    value={city}
+                    onChangeText={setCity}
+                  />
+                  <Text
+                    style={[
+                      styles.shippingDetailLabel,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
+                    {`${t('checkout.branchNumberLabel')}*`}
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { color: theme.textPrimary, borderColor: theme.border },
+                    ]}
+                    placeholder={t('checkout.branchNumberPlaceholder')}
+                    placeholderTextColor={theme.textSecondary}
+                    value={novaBranchNumber}
+                    onChangeText={setNovaBranchNumber}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              )}
+              {isPickupDelivery && (
+                <View
+                  style={[
+                    styles.shippingDetailCard,
+                    {
+                      backgroundColor: theme.background,
+                      borderColor: theme.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.shippingDetailTitle,
+                      { color: theme.textPrimary },
+                    ]}
+                  >
+                    {t('checkout.pickupLocationsTitle')}
+                  </Text>
+                  <View style={styles.pickupLocationList}>
+                    {pickupLocations.map((location, index) => (
+                      <Text
+                        key={`${location}-${index}`}
+                        style={[
+                          styles.pickupLocationItem,
+                          { color: theme.textSecondary },
+                        ]}
+                      >
+                        {location}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
               )}
             </View>
 

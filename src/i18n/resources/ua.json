@@ -102,6 +102,18 @@
     "noShippingMethods": "Немає доступних способів доставки",
     "shippingPickup": "Самовивіз із магазину",
     "shippingFlat": "Нова пошта",
+    "cityPlaceholder": "Наприклад: Київ",
+    "branchNumberLabel": "Номер відділення",
+    "branchNumberPlaceholder": "Номер відділення",
+    "enterBranchNumber": "Введіть номер відділення",
+    "novaDeliveryDetails": "Дані для доставки Новою поштою",
+    "pickupLocationsTitle": "Адреси магазинів",
+    "pickupLocations": [
+      "м. Київ, вул. Луговa 12 (ТРЦ \"КАРАВАН\")",
+      "м. Дніпро, вул. Василя Сухомлинського, 65",
+      "м. Городок, Львівська обл., вул. Нижні Пасіки, 9",
+      "м. Кременчук, Полтавська обл., вул. Свіштовська, 3"
+    ],
     "paymentCod": "Оплата при отриманні",
     "paymentFreeCheckout": "Безкоштовно"
   }
