@@ -41,10 +41,6 @@ async function request<T>(
   const queryString: string = buildQueryString(params);
   const url: string = `${BASE_URL}?${queryString}`;
 
-  if (__DEV__) {
-    console.log('🔷 API request URL:', url);
-  }
-
   const response: Response = await fetch(url);
 
   if (!response.ok) {
@@ -235,17 +231,14 @@ export async function logoutCustomer(token: string): Promise<void> {
 
 // 7) Отримати доступні методи оплати
 export async function getPaymentMethods(): Promise<PaymentMethodsResponse> {
-  console.log('🟡 API: getPaymentMethods called');
   const result = await request<PaymentMethodsResponse>({
     route: 'api/order/getPaymentMethod',
   });
-  console.log('🟡 API: getPaymentMethods result:', result);
   return result;
 }
 
 // 8) Отримати доступні методи доставки
 export async function getShippingMethods(): Promise<ShippingMethodsResponse> {
-  console.log('🟡 API: getShippingMethods called');
   const result = await request<ShippingMethodsResponse>({
     route: 'api/order/getShippingMethod',
   });

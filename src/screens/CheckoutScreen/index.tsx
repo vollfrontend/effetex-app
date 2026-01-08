@@ -42,18 +42,22 @@ import { useTheme } from '@/src/hooks/useTheme';
 import { showSuccess, showError } from '@/src/utils/toast';
 
 export const CheckoutScreen = () => {
-  console.log('🔵 CheckoutScreen: Component rendered');
-
   const navigation = useNavigation<any>();
   const theme = useTheme();
   const { t } = useTranslation();
+  const inputThemeStyles = useMemo(
+    () => ({
+      color: theme.textPrimary,
+      borderColor: theme.border,
+      backgroundColor: theme.background,
+    }),
+    [theme],
+  );
 
   // State
   const cart = useStore(state => state.cart);
   const user = useStore(state => state.user);
   const clearCart = useStore(state => state.clearCart);
-
-  console.log('🔵 CheckoutScreen: Cart items:', cart.length);
 
   // Form data
   const [firstname, setFirstname] = useState(user?.firstname || '');
@@ -85,17 +89,12 @@ export const CheckoutScreen = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const loadMethods = async () => {
-    console.log('🔵 CheckoutScreen: loadMethods called');
     setLoading(true);
     try {
-      console.log('🔵 CheckoutScreen: Calling API methods...');
       const [payments, shipping] = await Promise.all([
         getPaymentMethods(),
         getShippingMethods(),
       ]);
-
-      console.log('🟢 Payment methods response:', payments);
-      console.log('🟢 Shipping methods response:', shipping);
 
       // Ensure we have arrays
       // const paymentsArray = payments.payment_methods;
@@ -135,7 +134,6 @@ export const CheckoutScreen = () => {
 
   // Load payment and shipping methods
   useEffect(() => {
-    console.log('🔵 CheckoutScreen: useEffect mounted, calling loadMethods');
     loadMethods();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -185,10 +183,10 @@ export const CheckoutScreen = () => {
       showError(t('checkout.enterTelephone'));
       return false;
     }
-    if (!address1.trim()) {
-      showError(t('checkout.enterAddress'));
-      return false;
-    }
+    // if (!address1.trim()) {
+    //   showError(t('checkout.enterAddress'));
+    //   return false;
+    // }
     if (!city.trim()) {
       showError(t('checkout.enterCity'));
       return false;
@@ -292,6 +290,8 @@ export const CheckoutScreen = () => {
         order_status_id: 1,
       };
 
+      console.log('orderData', orderData);
+
       const response = await createOrder(orderData);
 
       if (response.success) {
@@ -330,8 +330,6 @@ export const CheckoutScreen = () => {
       </SafeAreaView>
     );
   }
-
-  console.log('paymentMethods', paymentMethods);
 
   return (
     <SafeAreaView
@@ -373,10 +371,7 @@ export const CheckoutScreen = () => {
               </Text>
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.firstname')}
                 placeholderTextColor={theme.textSecondary}
                 value={firstname}
@@ -384,10 +379,7 @@ export const CheckoutScreen = () => {
               />
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.lastname')}
                 placeholderTextColor={theme.textSecondary}
                 value={lastname}
@@ -395,10 +387,7 @@ export const CheckoutScreen = () => {
               />
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.telephone')}
                 placeholderTextColor={theme.textSecondary}
                 value={telephone}
@@ -407,10 +396,7 @@ export const CheckoutScreen = () => {
               />
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.email')}
                 placeholderTextColor={theme.textSecondary}
                 value={email}
@@ -432,10 +418,7 @@ export const CheckoutScreen = () => {
               </Text>
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.city')}
                 placeholderTextColor={theme.textSecondary}
                 value={city}
@@ -443,10 +426,7 @@ export const CheckoutScreen = () => {
               />
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.address1')}
                 placeholderTextColor={theme.textSecondary}
                 value={address1}
@@ -454,10 +434,7 @@ export const CheckoutScreen = () => {
               />
 
               <TextInput
-                style={[
-                  styles.input,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.input, inputThemeStyles]}
                 placeholder={t('checkout.address2')}
                 placeholderTextColor={theme.textSecondary}
                 value={address2}
@@ -494,8 +471,8 @@ export const CheckoutScreen = () => {
                             : styles.methodCardDefault,
                           {
                             backgroundColor: isSelected
-                              ? theme.cardBackground
-                              : theme.background,
+                              ? theme.background
+                              : theme.cardBackground,
                             borderColor: isSelected
                               ? theme.primary
                               : theme.border,
@@ -558,7 +535,7 @@ export const CheckoutScreen = () => {
                   style={[
                     styles.shippingDetailCard,
                     {
-                      backgroundColor: theme.background,
+                      backgroundColor: theme.cardBackground,
                       borderColor: theme.border,
                     },
                   ]}
@@ -580,14 +557,15 @@ export const CheckoutScreen = () => {
                     {`${t('checkout.city')}*`}
                   </Text>
                   <TextInput
-                    style={[
-                      styles.input,
-                      { color: theme.textPrimary, borderColor: theme.border },
-                    ]}
+                    style={[styles.input, inputThemeStyles]}
                     placeholder={t('checkout.cityPlaceholder')}
                     placeholderTextColor={theme.textSecondary}
                     value={city}
                     onChangeText={setCity}
+                    autoCapitalize="sentences"
+                    autoCorrect={false}
+                    keyboardType="default"
+                    textContentType="addressCity"
                   />
                   <Text
                     style={[
@@ -598,15 +576,15 @@ export const CheckoutScreen = () => {
                     {`${t('checkout.branchNumberLabel')}*`}
                   </Text>
                   <TextInput
-                    style={[
-                      styles.input,
-                      { color: theme.textPrimary, borderColor: theme.border },
-                    ]}
+                    style={[styles.input, inputThemeStyles]}
                     placeholder={t('checkout.branchNumberPlaceholder')}
                     placeholderTextColor={theme.textSecondary}
                     value={novaBranchNumber}
                     onChangeText={setNovaBranchNumber}
-                    keyboardType="number-pad"
+                    autoCapitalize="characters"
+                    autoCorrect={false}
+                    keyboardType="default"
+                    textContentType="none"
                   />
                 </View>
               )}
@@ -739,10 +717,7 @@ export const CheckoutScreen = () => {
               </Text>
 
               <TextInput
-                style={[
-                  styles.textArea,
-                  { color: theme.textPrimary, borderColor: theme.border },
-                ]}
+                style={[styles.textArea, inputThemeStyles]}
                 placeholder={t('checkout.commentPlaceholder')}
                 placeholderTextColor={theme.textSecondary}
                 value={comment}
