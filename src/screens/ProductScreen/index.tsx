@@ -1,6 +1,13 @@
 // React & RN
 import { FC, useEffect, useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // API
@@ -31,31 +38,9 @@ import { useTheme } from '@/src/hooks/useTheme';
 // Types
 import type { ProductTab } from '@/src/components/Product/ProductTabs';
 import type { ProductImage } from '@/src/components/Product/ImageSlider/types';
+import type { ProductFull, ProductOption } from '@/src/api/types';
 
 type Props = NativeStackScreenProps<InnerStackParamList, 'Product'>;
-
-interface ProductAttributeItem {
-  name: string;
-  text: string;
-}
-
-interface ProductAttributeGroup {
-  attribute_group_id: string;
-  name: string;
-  attribute: ProductAttributeItem[];
-}
-
-interface Product {
-  product_id: string;
-  name: string;
-  description: string;
-  image: string;
-  price: string;
-  special?: string | null;
-  stock_status: string;
-  images?: ProductImage[];
-  attributes?: ProductAttributeGroup[];
-}
 
 export const ProductScreen: FC<Props> = ({ route }) => {
   const theme = useTheme();
@@ -67,10 +52,12 @@ export const ProductScreen: FC<Props> = ({ route }) => {
   // Використовуємо productId з параметрів або зі стору
   const productId = route.params?.productId ?? productIdStore;
 
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<ProductFull | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>('description');
   const [wishlistLoading, setWishlistLoading] = useState<boolean>(false);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   const navigation = useNavigation<any>();
   const addToCart = useStore(state => state.addToCart);
@@ -179,7 +166,8 @@ export const ProductScreen: FC<Props> = ({ route }) => {
       }
 
       try {
-        const productOne: Product = await getOneProduct(Number(productId));
+        const productOne: ProductFull = await getOneProduct(Number(productId));
+        console.log('productOne', productOne);
         setProduct(productOne);
       } catch (err) {
         console.log('API error:', err);
@@ -190,6 +178,39 @@ export const ProductScreen: FC<Props> = ({ route }) => {
 
     load();
   }, [productId]);
+
+  const sizeOption = useMemo<ProductOption | undefined>(() => {
+    return product?.options?.find(option =>
+      option.name?.toLowerCase().includes('розмір'),
+    );
+  }, [product]);
+
+  const colorOption = useMemo<ProductOption | undefined>(() => {
+    return product?.options?.find(option =>
+      option.name?.toLowerCase().includes('кольор'),
+    );
+  }, [product]);
+
+  const sizeValues = useMemo(
+    () => sizeOption?.product_option_value ?? [],
+    [sizeOption],
+  );
+
+  const colorValues = useMemo(
+    () => colorOption?.product_option_value ?? [],
+    [colorOption],
+  );
+
+  useEffect(() => {
+    if (!product) {
+      setSelectedSize(null);
+      setSelectedColor(null);
+      return;
+    }
+
+    setSelectedSize(sizeValues[0]?.name ?? null);
+    setSelectedColor(colorValues[0]?.name ?? null);
+  }, [product, sizeValues, colorValues]);
 
   if (loading) {
     return (
@@ -266,6 +287,82 @@ export const ProductScreen: FC<Props> = ({ route }) => {
                 stock_status: product.stock_status,
               }}
             />
+
+            {(sizeValues.length > 0 || colorValues.length > 0) && (
+              <View style={styles.optionsWrapper}>
+                {sizeValues.length > 0 && (
+                  <View style={styles.optionBlock}>
+                    <Text style={[styles.optionTitle, { color: theme.textPrimary }]}>
+                      {sizeOption?.name ?? 'Розміри'}
+                    </Text>
+                    <View style={styles.sizeRow}>
+                      {sizeValues.map(value => {
+                        const isActive = selectedSize === value.name;
+                        const key =
+                          value.product_option_value_id ??
+                          value.option_value_id ??
+                          value.name;
+                        return (
+                          <TouchableOpacity
+                            key={key}
+                            style={[
+                              styles.sizeValue,
+                              isActive && styles.sizeValueActive,
+                            ]}
+                            onPress={() => setSelectedSize(value.name)}
+                          >
+                            <Text
+                              style={[
+                                styles.sizeValueText,
+                                isActive && styles.sizeValueTextActive,
+                              ]}
+                            >
+                              {value.name}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+                )}
+
+                {colorValues.length > 0 && (
+                  <View style={styles.optionBlock}>
+                    <Text style={[styles.optionTitle, { color: theme.textPrimary }]}>
+                      {colorOption?.name ?? 'Кольори'}
+                    </Text>
+                    <View style={styles.colorRow}>
+                      {colorValues.map(value => {
+                        const isActive = selectedColor === value.name;
+                        const imageUri = value.image?.trim()
+                          ? value.image
+                          : product.image;
+                        const key =
+                          value.product_option_value_id ??
+                          value.option_value_id ??
+                          value.name;
+                        return (
+                          <TouchableOpacity
+                            key={key}
+                            style={[
+                              styles.colorCard,
+                              isActive && styles.colorCardActive,
+                            ]}
+                            onPress={() => setSelectedColor(value.name)}
+                          >
+                            <Image
+                              source={{ uri: imageUri }}
+                              style={styles.colorImage}
+                            />
+                            <Text style={styles.colorName}>{value.name}</Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+                )}
+              </View>
+            )}
 
             <ProductDescription html={product.description} />
           </>

@@ -19,6 +19,7 @@ import ItemCard from '@/src/components/ItemsSlider/ItemCard';
 
 // Styles
 import { styles } from './styles';
+import { useTheme } from '@/src/hooks/useTheme';
 
 // Types
 import { ItemsSliderProps } from './types';
@@ -26,6 +27,7 @@ import { Category, ProductItem } from '@/src/api/types';
 import { Product } from '@/src/api/products';
 
 const ItemsSlider: FC<ItemsSliderProps> = ({ title, categoryName }) => {
+  const theme = useTheme();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
@@ -119,7 +121,7 @@ const ItemsSlider: FC<ItemsSliderProps> = ({ title, categoryName }) => {
 
   return (
     <View style={styles.wrapper}>
-      {title && <Text style={styles.heading}>{categoryName}</Text>}
+      {title && <Text style={[styles.heading, { color: theme.textPrimary }]}>{categoryName}</Text>}
 
       <FlatList
         data={products}

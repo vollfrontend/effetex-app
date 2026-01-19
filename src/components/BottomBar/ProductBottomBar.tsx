@@ -10,7 +10,6 @@ import { useTheme } from '@/src/hooks/useTheme';
 // Styles
 import { styles } from './styles';
 import {
-  CompareIcon,
   CartIcon,
   FavoritesIcon,
 } from '@/src/components/IconButtons';
@@ -26,7 +25,6 @@ type Props = {
 
 export const ProductBottomBar: FC<Props> = ({
   isFavorite,
-  onCompare,
   onCart,
   addToWishlistToggle,
   onBuy,
@@ -36,9 +34,6 @@ export const ProductBottomBar: FC<Props> = ({
 
   return (
     <View style={[styles.productWrapper, { backgroundColor: theme.bottomBar }]}>
-      <TouchableOpacity onPress={onCompare}>
-        <CompareIcon color={theme.iconDefault} size={24} focused={false} />
-      </TouchableOpacity>
 
       <TouchableOpacity onPress={onCart}>
         <CartIcon color={theme.iconDefault} size={24} focused={false} />
