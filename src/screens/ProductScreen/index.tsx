@@ -167,7 +167,6 @@ export const ProductScreen: FC<Props> = ({ route }) => {
 
       try {
         const productOne: ProductFull = await getOneProduct(Number(productId));
-        console.log('productOne', productOne);
         setProduct(productOne);
       } catch (err) {
         console.log('API error:', err);
