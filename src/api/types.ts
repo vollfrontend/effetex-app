@@ -229,6 +229,8 @@ export interface OrderAddress {
   city: string;
   country: string;
   country_id: number;
+  zone_id?: number;
+  postcode?: number;
 }
 
 export interface OrderCustomer {

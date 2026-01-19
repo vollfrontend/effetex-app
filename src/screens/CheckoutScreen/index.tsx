@@ -235,7 +235,7 @@ export const CheckoutScreen = () => {
 
       const orderData: CreateOrderRequest = {
         customer: {
-          customer_id: user?.customer_id,
+          customer_id: user?.customer_id ?? 123,
           firstname,
           lastname,
           email,
@@ -244,11 +244,14 @@ export const CheckoutScreen = () => {
         payment_address: {
           firstname,
           lastname,
+          company: '',
           address_1: resolvedAddress1,
           address_2: address2,
           city,
           country: 'Україна',
           country_id: 220,
+          zone_id: 1,
+          postcode: 1,
         },
         payment_method: {
           code: selectedPayment!.code,
@@ -257,11 +260,14 @@ export const CheckoutScreen = () => {
         shipping_address: {
           firstname,
           lastname,
+          company: '',
           address_1: resolvedAddress1,
           address_2: address2,
           city,
           country: 'Україна',
           country_id: 220,
+          zone_id: 1,
+          postcode: 1,
         },
         shipping_method: {
           code: selectedShipping!.code,
