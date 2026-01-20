@@ -56,48 +56,29 @@ const ImageRenderer: FC<ImgRendererProps> = ({ tnode }) => {
     );
   }
 
-    return <Image source={{ uri: src }} style={iconStyles.image} />;
+  return <Image source={{ uri: src }} style={iconStyles.image} />;
+};
+
+const INLINE_ROW_STYLE = {
+  flexDirection: 'row' as const,
+  alignItems: 'center' as const,
+  gap: 8,
 };
 
 const paragraphRenderer = ({ TDefaultRenderer, tnode, ...props }: any) => {
   const children = tnode.children || [];
+  const hasMedia = children.some((child: any) => child.tagName === 'img' || child.tagName === 'svg');
 
-  const hasImg = children.some((c: any) => c.tagName === 'img');
-
-  if (!hasImg) {
-    return <TDefaultRenderer tnode={tnode} {...props} />;
-  }
-
-  const imgNode = children.find((c: any) => c.tagName === 'img');
-  if (!imgNode) {
-    return <TDefaultRenderer tnode={tnode} {...props} />;
-  }
-
-  const textNode = children.find(
-    (c: any) => c.tagName !== 'img' && typeof c.data === 'string',
-  );
-
-  if (!textNode || typeof textNode.data !== 'string') {
+  if (!hasMedia) {
     return <TDefaultRenderer tnode={tnode} {...props} />;
   }
 
   return (
-    <View style={styles.imageBlock}>
-      <RenderHTML
-        contentWidth={ICON_SIZE}
-        source={{ html: `<img src="${imgNode.attributes.src}" />` }}
-        renderers={{ img: ImageRenderer }}
-      />
-
-      <RenderHTML
-        contentWidth={width - ICON_SIZE - 32}
-        source={{ html: textNode.data }}
-        tagsStyles={{
-          body: { color: COLORS.textPrimary },
-          span: { color: COLORS.textPrimary, fontSize: 16 },
-        }}
-      />
-    </View>
+    <TDefaultRenderer
+      tnode={tnode}
+      {...props}
+      style={[props.style, INLINE_ROW_STYLE]}
+    />
   );
 };
 
@@ -105,8 +86,6 @@ const renderers = {
   img: ImageRenderer,
   p: paragraphRenderer,
 };
-
-// ... (renderers object remains, but we need to update usage inside it)
 
 const ProductDescription: FC<Props> = ({ html }) => {
   const cleanedHtml = useMemo(() => cleanHtml(decode(html)), [html]);
