@@ -6,6 +6,7 @@ import RenderHTML from 'react-native-render-html';
 import { decode } from 'html-entities';
 import { SvgUri } from 'react-native-svg';
 import { COLORS } from '@/src/constants/colors';
+import type { Node } from '@native-html/transient-render-engine';
 
 // Utils
 import { cleanHtml } from '@/src/utils/cleanHtml';
@@ -82,6 +83,15 @@ const paragraphRenderer = ({ TDefaultRenderer, tnode, ...props }: any) => {
   );
 };
 
+const ignoreEmptyTextNodes = (node: Node) => {
+  if (node.type !== 'text') {
+    return false;
+  }
+
+  const text = (node as any).data as string | undefined;
+  return !text || !text.trim();
+};
+
 const renderers = {
   img: ImageRenderer,
   p: paragraphRenderer,
@@ -97,6 +107,7 @@ const ProductDescription: FC<Props> = ({ html }) => {
         contentWidth={width}
         source={{ html: cleanedHtml }}
         renderers={renderers}
+        ignoreDomNode={ignoreEmptyTextNodes}
         tagsStyles={{
           body: { color: theme.textPrimary },
           p: { color: COLORS.textPrimary, marginBottom: 10 },

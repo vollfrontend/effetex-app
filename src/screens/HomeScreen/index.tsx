@@ -153,11 +153,11 @@ const HomeScreen: FC = () => {
 
         <ActionBanner />
 
-        {/* <PromoSlider
+        <PromoSlider
           data={slidesData}
           onSlidePress={handleSlidePress}
           backgroundColor={theme.background}
-        /> */}
+        />
         <View style={dynamicStyles.content}>
           <View style={dynamicStyles.promoContainer}>
             <PromoBlock
