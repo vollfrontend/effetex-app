@@ -1,6 +1,7 @@
 // React & RN
 import type { FC } from 'react';
-import { View, Dimensions, Image } from 'react-native';
+import { memo, useMemo } from 'react';
+import { View, Dimensions, Image, StyleSheet } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 import { decode } from 'html-entities';
 import { SvgUri } from 'react-native-svg';
@@ -29,94 +30,86 @@ interface ImgRendererProps {
 const { width } = Dimensions.get('window');
 const ICON_SIZE = 30;
 
-const renderers = {
-  // ---------- IMG ----------
-  img: ({ tnode }: ImgRendererProps) => {
-    const src = tnode.attributes.src;
-    if (!src) return null;
+const iconStyles = StyleSheet.create({
+  svg: {
+    marginRight: 12,
+    marginVertical: 8,
+  },
+  image: {
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    resizeMode: 'contain',
+    marginRight: 12,
+    marginVertical: 8,
+  },
+});
 
-    const isSvg = src.toLowerCase().endsWith('.svg');
+const ImageRenderer: FC<ImgRendererProps> = ({ tnode }) => {
+  const src = tnode.attributes.src;
+  if (!src) return null;
 
-    if (isSvg) {
-      return (
-        <SvgUri
-          uri={src}
-          width={ICON_SIZE}
-          height={ICON_SIZE}
-          style={{ marginRight: 12, marginVertical: 8 }}
-        />
-      );
-    }
+  const isSvg = src.toLowerCase().endsWith('.svg');
 
+  if (isSvg) {
     return (
-      <Image
-        source={{ uri: src }}
-        style={{
-          width: ICON_SIZE,
-          height: ICON_SIZE,
-          resizeMode: 'contain',
-          marginRight: 12,
-          marginVertical: 8,
+      <SvgUri uri={src} width={ICON_SIZE} height={ICON_SIZE} style={iconStyles.svg} />
+    );
+  }
+
+    return <Image source={{ uri: src }} style={iconStyles.image} />;
+};
+
+const paragraphRenderer = ({ TDefaultRenderer, tnode, ...props }: any) => {
+  const children = tnode.children || [];
+
+  const hasImg = children.some((c: any) => c.tagName === 'img');
+
+  if (!hasImg) {
+    return <TDefaultRenderer tnode={tnode} {...props} />;
+  }
+
+  const imgNode = children.find((c: any) => c.tagName === 'img');
+  if (!imgNode) {
+    return <TDefaultRenderer tnode={tnode} {...props} />;
+  }
+
+  const textNode = children.find(
+    (c: any) => c.tagName !== 'img' && typeof c.data === 'string',
+  );
+
+  if (!textNode || typeof textNode.data !== 'string') {
+    return <TDefaultRenderer tnode={tnode} {...props} />;
+  }
+
+  return (
+    <View style={styles.imageBlock}>
+      <RenderHTML
+        contentWidth={ICON_SIZE}
+        source={{ html: `<img src="${imgNode.attributes.src}" />` }}
+        renderers={{ img: ImageRenderer }}
+      />
+
+      <RenderHTML
+        contentWidth={width - ICON_SIZE - 32}
+        source={{ html: textNode.data }}
+        tagsStyles={{
+          body: { color: COLORS.textPrimary },
+          span: { color: COLORS.textPrimary, fontSize: 16 },
         }}
       />
-    );
-  },
+    </View>
+  );
+};
 
-  // ---------- БЕЗПЕЧНИЙ CUSTOM <p> ----------
-  p: ({ TDefaultRenderer, tnode, ...props }: any) => {
-    const children = tnode.children || [];
-
-    const hasImg = children.some((c: any) => c.tagName === 'img');
-
-    // Якщо немає картинки — нічого не чіпаємо
-    if (!hasImg) {
-      return <TDefaultRenderer tnode={tnode} {...props} />;
-    }
-
-    // Параграф із картинкою, але якщо структура не така, як ми очікуємо —
-    // теж не чіпаємо, щоб не падати
-    const imgNode = children.find((c: any) => c.tagName === 'img');
-    if (!imgNode) {
-      return <TDefaultRenderer tnode={tnode} {...props} />;
-    }
-
-    const textNode = children.find(
-      (c: any) => c.tagName !== 'img' && typeof c.data === 'string',
-    );
-
-    // Якщо не знайшли явний текстовий вузол — просто віддаємо дефолт
-    if (!textNode || typeof textNode.data !== 'string') {
-      return <TDefaultRenderer tnode={tnode} {...props} />;
-    }
-
-    // ⚠️ До цього місця ми, швидше за все, не дійдемо з твоїм поточним HTML,
-    // але залишимо на майбутнє.
-    return (
-      <View style={styles.imageBlock}>
-        <RenderHTML
-          contentWidth={ICON_SIZE}
-          source={{ html: `<img src="${imgNode.attributes.src}" />` }}
-          renderers={{ img: renderers.img }}
-        />
-
-        <RenderHTML
-          contentWidth={width - ICON_SIZE - 32}
-          source={{ html: textNode.data }}
-          tagsStyles={{
-            body: { color: COLORS.textPrimary },
-            span: { color: COLORS.textPrimary, fontSize: 16 },
-          }}
-        />
-      </View>
-    );
-  },
+const renderers = {
+  img: ImageRenderer,
+  p: paragraphRenderer,
 };
 
 // ... (renderers object remains, but we need to update usage inside it)
 
 const ProductDescription: FC<Props> = ({ html }) => {
-  const decodedHtml: string = decode(html);
-  const cleanedHtml: string = cleanHtml(decodedHtml);
+  const cleanedHtml = useMemo(() => cleanHtml(decode(html)), [html]);
   const theme = useTheme();
 
   return (
@@ -137,4 +130,7 @@ const ProductDescription: FC<Props> = ({ html }) => {
   );
 };
 
-export default ProductDescription;
+const MemoizedProductDescription = memo(ProductDescription);
+MemoizedProductDescription.displayName = 'ProductDescription';
+
+export default MemoizedProductDescription;

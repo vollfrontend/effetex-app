@@ -1,5 +1,5 @@
 // React & RN
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -30,21 +30,20 @@ const ItemsSlider: FC<ItemsSliderProps> = ({ title, categoryName }) => {
   const theme = useTheme();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const { categories } = useStore();
-
-  useEffect(() => {
-    if (categories.length > 0) {
-      setCurrentCategory(
-        categories.find(category => category.name === categoryName) ?? null,
-      );
-    }
-  }, [categories, categoryName]);
+  const categories = useStore(state => state.categories);
+  const currentCategory = useMemo(
+    () =>
+      categories.find(category => category.name === categoryName) ?? null,
+    [categories, categoryName],
+  );
 
   // Fetch products on mount
   useEffect(() => {
-    if (!currentCategory) return;
+    if (!currentCategory) {
+      setProducts([]);
+      return;
+    }
     const load = async () => {
       try {
         setLoading(true);
